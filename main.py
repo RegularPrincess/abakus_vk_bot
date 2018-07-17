@@ -20,7 +20,7 @@ secret_key = config.secret_key
 group_id = config.group_id
 admin_id = config.admin_id
 admin_name = config.admin_name
-db_name = 'db.db'
+db_name = config.db_name
 bot_name = config.bot_name
 
 vk_api_url = config.vk_api_url
@@ -78,8 +78,11 @@ with sqlite3.connect(db_name) as connection:
 
 @app.route(rule='/{0}'.format(bot_name), methods=['POST'])
 def processing():
-    print('command')
     data = json.loads(request.data)
+
+    f = open('log', 'w')
+    f.write("processing start " + data['type'] )
+    f.close()
 
     if 'secret' not in data.keys():
         return 'Not VK.'
@@ -98,17 +101,10 @@ def processing():
 
 
 def main(argv):
-    global token
-    global confirmation_token
-    global secret_key
-    global group_id
-    global admin_id
-    global admin_name
-    global db_name
-    global bot_name
     port = int(argv[1])
     app.run(host='0.0.0.0', port=port, debug=True)
+
+
 if __name__ == '__main__':
     import sys
-
     main(sys.argv[0:])
