@@ -76,12 +76,17 @@ with sqlite3.connect(db_name) as connection:
     connection.commit()
 
 
-@app.route(rule='/{0}'.format(bot_name), methods=['POST'])
+@app.route(rule='/abacus_vk_bot', methods=['POST'])
 def processing():
+
+    f = open('log', 'a')
+    f.write("processing start \n")
+    f.close()
+
     data = json.loads(request.data)
 
     f = open('log', 'w')
-    f.write("processing start " + data['type'] )
+    f.write("processing start " + data['type'] + '\n')
     f.close()
 
     if 'secret' not in data.keys():
