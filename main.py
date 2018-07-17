@@ -76,7 +76,7 @@ with sqlite3.connect(db_name) as connection:
     connection.commit()
 
 
-@app.route(rule='/abacus_vk_bot', methods=['POST'])
+@app.route(rule='/', methods=['POST'])
 def processing():
 
     f = open('log', 'a')
