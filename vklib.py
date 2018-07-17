@@ -2,10 +2,11 @@
 # -*- coding: utf-8 -*-
 
 import json
-
 import requests
-
 import config
+
+
+api_ver = config.api_ver
 
 
 def send_message(user_id, text):
@@ -16,7 +17,7 @@ def send_message(user_id, text):
         'message': text,
         'user_id': user_id,
         'access_token': config.token,
-        'v': '5.0'
+        'v': api_ver
     }
     requests.post(config.vk_api_url + 'messages.send', data=data)
 
@@ -30,7 +31,7 @@ def send_message_keyboard(user_id, text, keyboard):
         'user_id': user_id,
         'access_token': config.token,
         'keyboard': json.dumps(keyboard, ensure_ascii=False),
-        'v': '5.68'
+        'v': api_ver
     }
     requests.post(config.vk_api_url + 'messages.send', data=data)
 
@@ -44,7 +45,7 @@ def get_group_memebers(group_id, offset=0, count=1000):
         'offset': offset,
         'count': count,
         'access_token': config.token,
-        'v': '5.0'
+        'v': api_ver
     }
     res = requests.post(config.vk_api_url + 'groups.getMembers', data=data)
     try:
@@ -61,7 +62,7 @@ def get_user_name(uid):
     data = {
         'user_ids': uid,
         'access_token': config.token,
-        'v': '5.0'
+        'v': api_ver
     }
     res = requests.post(config.vk_api_url + 'users.get', data=data)
     try:
@@ -80,7 +81,7 @@ def get_count_group_followers(group_id):
         'group_id': group_id,
         'fields': 'members_count,',
         'access_token': config.token,
-        'v': '5.0'
+        'v': api_ver
     }
     res = requests.post(config.vk_api_url + 'groups.getById', data=data)
     try:
@@ -101,7 +102,7 @@ def send_message_much(user_ids, text):
         'message': text,
         'user_ids': d,
         'access_token': config.token,
-        'v': '5.78'
+        'v': api_ver
     }
     requests.post(config.vk_api_url + 'messages.send', data=data)
 
@@ -113,7 +114,7 @@ def get_messages_upload_server(peer_id):
     data = {
         'peer_id': peer_id,
         'access_token': config.token,
-        'v': '5.78'
+        'v': api_ver
     }
     res = requests.post(config.vk_api_url + 'photos.getMessagesUploadServer', data=data)
     return res.json()
@@ -128,7 +129,7 @@ def save_messages_photo(photo, server, hash):
         'server': server,
         'hash': hash,
         'access_token': config.token,
-        'v': '5.78'
+        'v': api_ver
     }
     res = requests.post(config.vk_api_url + 'photos.saveMessagesPhoto', data=data)
     return res.json()
@@ -144,7 +145,7 @@ def send_message_with_photo(user_id, text, photo):
         'user_id': user_id,
         'attachment': photo,
         'access_token': config.token,
-        'v': '5.0'
+        'v': api_ver
     }
     res = requests.post(config.vk_api_url + 'messages.send', data=data)
     print(res.text)
@@ -157,7 +158,7 @@ def get_doc_upload_server1(peer_id):
     data = {
         'peer_id': peer_id,
         'access_token': config.token,
-        'v': '5.78'
+        'v': api_ver
     }
     res = requests.post(config.vk_api_url + 'docs.getMessagesUploadServer', data=data)
     return res.json()
@@ -170,7 +171,7 @@ def save_doc(file):
     data = {
         'file': file,
         'access_token': config.token,
-        'v': '5.78'
+        'v': api_ver
     }
     res = requests.post(config.vk_api_url + 'docs.save', data=data)
     return res.json()
@@ -185,6 +186,6 @@ def send_message_doc(user_id, text, doc):
         'user_id': user_id,
         'attachment': doc,
         'access_token': config.token,
-        'v': '5.0'
+        'v': api_ver
     }
     requests.post(config.vk_api_url + 'messages.send', data=data)
