@@ -101,6 +101,11 @@ def processing():
 
 
 def main(argv):
+
+    f = open('log', 'w')
+    f.write("Start")
+    f.close()
+
     port = int(argv[1])
     app.run(host='0.0.0.0', port=port, debug=True)
 
@@ -108,8 +113,5 @@ def main(argv):
 if __name__ == '__main__':
     import sys
 
-    f = open('log', 'w')
-    f.write("Start")
-    f.close()
 
     main(sys.argv[0:])
