@@ -76,7 +76,12 @@ with sqlite3.connect(db_name) as connection:
     connection.commit()
 
 
-@app.route(rule='/', methods=['POST'])
+@app.route(rule='/', methods=['GET'])
+def debug():
+    return "hello world"
+
+
+@app.route(rule='/abacus_vk_bot', methods=['POST'])
 def processing():
 
     f = open('log', 'a')
@@ -122,4 +127,5 @@ def main(argv):
 
 if __name__ == '__main__':
     import sys
+
     main(sys.argv[0:])
