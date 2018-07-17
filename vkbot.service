@@ -1,0 +1,11 @@
+[Unit]
+Description=VK parser bot
+[Service]
+WorkingDirectory=/root/bots/computers/
+ExecStart=/usr/bin/python3.5 /root/bots/computers/main.py 8082
+Restart=always
+RestartSec=10
+SyslogIdentifier=python-vkparserbot-computers
+User=root
+[Install]
+WantedBy=multi-user.target
