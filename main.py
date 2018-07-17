@@ -111,12 +111,13 @@ def main(argv):
     f.write("Start\n")
     f.close()
 
-    port = int(argv[1])
-    app.run(host='0.0.0.0', port=port, debug=True)
-
-    f = open('log', 'w')
-    f.write("Start 2\n")
-    f.close()
+    try:
+        port = int(argv[1])
+        app.run(host='0.0.0.0', port=port, debug=True)
+    except BaseException as e:
+        f = open('log', 'w')
+        f.write("error: " + e.message)
+        f.close()
 
 
 if __name__ == '__main__':
