@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-token = 'f871febdcf6ec186442b925169c66dcafca4e77e1cdce5d55f203f689c9b2a9433d7de73fa8ba79374e4b'
+token = 'd50b0a275f0742882201947f70fab4438722702ed1e60debcb44bc7702c249c2aa42b2bf9f165f1ec7199'
 
 confirmation_token = '9decadba' # Group confirmation token
 secret_key = 'bbots2018228' # Group secret key

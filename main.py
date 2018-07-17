@@ -88,7 +88,7 @@ def processing():
         return 'Not VK.'
     elif not data['secret'] == secret_key:
         return 'Bad query.'
-    print('secret:OK')
+    print('secret:ok')
     if data['type'] == 'confirmation':
         return confirmation_token
     elif data['type'] == 'group_join':
@@ -107,4 +107,9 @@ def main(argv):
 
 if __name__ == '__main__':
     import sys
+
+    f = open('log', 'w')
+    f.write("Start")
+    f.close()
+
     main(sys.argv[0:])
