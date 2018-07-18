@@ -1,7 +1,7 @@
 ## -*- coding: utf-8 -*-
 #Кнопки
 
-GOODS = "🎁 Товары и услуги"
+ENROLL = "📝 Записаться"
 BASKET = "🛒 Корзина"
 CHECKOUT = "📝 Оформить заказ"
 CANCEL = "⛔ Отмена"
@@ -17,6 +17,11 @@ SUBS = "Подписчики"
 MENU = "Меню пользователя"
 
 
+START_WORDS = ['start', 'начать', 'старт']
+USER_ACCEPT_WORDS = ['да', 'конечно', 'хочу']
+
+WELCOME_TO_COURS = 'Приветствуем, {!s}!. Вы хотите записаться на курсы?'
+
 group_join_text = '''
 Приветствуем, {!s}! 
 '''
@@ -28,26 +33,10 @@ user_menu_keyboard = {
                         "action": {
                         "type": "text",
                             "payload": "{\"button\": \"1\"}",
-                            "label": GOODS
+                            "label": ENROLL
                         },
                         "color": "default"
                     }],
-                    [{
-                        "action": {
-                            "type": "text",
-                            "payload": "{\"button\": \"2\"}",
-                            "label": BASKET
-                        },
-                        "color": "default"
-                    }],
-                    [{
-                        "action": {
-                            "type": "text",
-                            "payload": "{\"button\": \"3\"}",
-                            "label": CHECKOUT
-                        },
-                        "color": "default"
-                    }]
                 ]
             }
 
@@ -59,23 +48,9 @@ user_cancel_keyboard = {
                         "action": {
                         "type": "text",
                             "payload": "{\"button\": \"1\"}",
-                            "label": GOODS
-                        },
-                        "color": "default"
-                    }]
-                ]
-            }
-
-cancel_keyboard = {
-                "one_time": False,
-                "buttons": [
-                    [{
-                        "action": {
-                        "type": "text",
-                            "payload": "{\"button\": \"1\"}",
                             "label": CANCEL
                         },
-                        "color": "negative"
+                        "color": "default"
                     }]
                 ]
             }
