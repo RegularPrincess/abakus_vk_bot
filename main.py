@@ -38,18 +38,6 @@ PRODUCT_LIST = []
 PRODUCT_CATEG_LIST = []
 CATEGORY_LIST = []
 
-BASKET = {}
-'''
-BASKET = {
-    217166737: [{
-        'product_id': 1,
-        'killogramms': 2,
-    }, {
-        'product_id': 2,
-        'killogramms': 3,
-    }]
-}
-'''
 LAST_COMMAND = {}
 CANCEL = {}
 
@@ -81,7 +69,7 @@ def debug():
     return "hello world"
 
 
-@app.route(rule='/abacus_vk_bot', methods=['POST'])
+@app.route(rule='/{0}'.format(bot_name), methods=['POST'])
 def processing():
 
     f = open('log', 'a')
@@ -90,7 +78,7 @@ def processing():
 
     data = json.loads(request.data)
 
-    f = open('log', 'w')
+    f = open('log', 'a')
     f.write("processing start " + data['type'] + '\n')
     f.close()
 
@@ -98,7 +86,6 @@ def processing():
         return 'Not VK.'
     elif not data['secret'] == secret_key:
         return 'Bad query.'
-    print('secret:ok')
     if data['type'] == 'confirmation':
         return confirmation_token
     elif data['type'] == 'group_join':
@@ -116,16 +103,9 @@ def main(argv):
     f.write("Start\n")
     f.close()
 
-    try:
-        port = int(argv[1])
-        app.run(host='0.0.0.0', port=port, debug=True)
-    except BaseException as e:
-        f = open('log', 'w')
-        f.write("error: " + e.message)
-        f.close()
-
+    port = int(argv[0])
+    app.run(host='0.0.0.0', port=port, debug=True)
 
 if __name__ == '__main__':
     import sys
-
     main(sys.argv[0:])
