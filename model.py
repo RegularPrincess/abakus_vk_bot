@@ -6,6 +6,26 @@ import vklib
 import config
 
 
+with sqlite3.connect(config.db_name) as connection:
+    cursor = connection.cursor()
+    sql = '''CREATE TABLE IF NOT EXISTS known_users (
+        id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+        uid INTEGER UNIQUE NOT NULL,
+        status TEXT NOT NULL,
+        name TEXT NOT NULL)'''
+    cursor.execute(sql)
+    sql = '''CREATE TABLE IF NOT EXISTS admins (
+        id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+        uid INTEGER UNIQUE NOT NULL,
+        name TEXT NOT NULL)'''
+    cursor.execute(sql)
+    # Add base admins to bot
+    sql = '''INSERT OR IGNORE INTO admins (uid, name) VALUES ({!s}, '{!s}')'''.format(
+        config.admin_id, config.admin_name)
+    cursor.execute(sql)
+    connection.commit()
+
+
 class Admin:
     def __init__(self, uid, name, status='member'):
         self.uid = uid
@@ -86,6 +106,7 @@ def add_bot_admin(uid, name):
         cursor.execute(sql, (uid, name))
         connection.commit()
 
+
 def set_bot_follower_status(uid, status):
     with sqlite3.connect(config.db_name) as connection:
         cursor = connection.cursor()
@@ -93,14 +114,15 @@ def set_bot_follower_status(uid, status):
         cursor.execute(sql, (status, uid))
         connection.commit()
 
-def add_bot_follower(uid, name,status="member"):
+
+def add_bot_follower(uid, name, status="member"):
     """
     Добавить подписчика бота
     """
     with sqlite3.connect(config.db_name) as connection:
         cursor = connection.cursor()
         sql = '''INSERT OR IGNORE INTO known_users (uid, status, name) VALUES (?, ?, ?)'''
-        cursor.execute(sql, (uid, status,name))
+        cursor.execute(sql, (uid, status, name))
         connection.commit()
 
 
