@@ -103,8 +103,8 @@ def main(argv):
     f.write("Start\n")
     f.close()
 
-    port = int(argv[0])
-    app.run(host='0.0.0.0', port=port, debug=True)
+    #port = int(argv[0])
+    app.run(host='0.0.0.0', port=8088, debug=True)
 
 if __name__ == '__main__':
     import sys
