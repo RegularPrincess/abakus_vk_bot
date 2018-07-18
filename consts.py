@@ -20,13 +20,20 @@ MENU = "Меню пользователя"
 START_WORDS = ['start', 'начать', 'старт']
 USER_ACCEPT_WORDS = ['да', 'конечно', 'хочу']
 
-WELCOME_TO_COURS = 'Приветствуем, {!s}!. Вы хотите записаться на курсы?'
+WELCOME_TO_COURSE = 'Приветствуем, {!s}!. Вы хотите записаться на курсы?'
 
 group_join_text = '''
 Приветствуем, {!s}! 
 '''
 
-user_menu_keyboard = {
+GROUP_LEAVE_MESSAGE = '''
+Ждем тебя снова!
+'''
+
+
+EMPTY_KEYBOARD = ''
+
+user_enroll_keyboard = {
                 "one_time": False,
                 "buttons": [
                     [{
@@ -55,10 +62,6 @@ user_cancel_keyboard = {
                 ]
             }
 
-
-group_leave_text = '''
-Ждем тебя снова!
-'''
 
 admin_panel_text = '''
 ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||| 

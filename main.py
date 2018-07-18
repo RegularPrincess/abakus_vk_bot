@@ -57,17 +57,17 @@ def processing():
         return confirmation_token
     elif data['type'] == 'group_join':
         uid = data['object']['user_id']
-        uname = vklib.get_user_name(uid)
-        s.group_join(uid, uname)
-        vklib.send_message(uid, c.group_join_text.format(uname))
+        s.group_join(uid)
         return 'ok'
     elif data['type'] == 'message_new':
         uid = data['object']['from_id']
         text = data['object']['text']
         s.message_processing(uid, text)
+        return 'ok'
     elif data['type'] == 'group_leave':
         uid = data['object']['user_id']
         s.group_leave(uid)
+        return 'ok'
 
 def main(argv):
     #port = int(argv[0])
