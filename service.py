@@ -25,7 +25,7 @@ def message_processing(uid, text):
         vk.send_message_keyboard(uid, cnst.WELCOME_TO_COURSE.format(uname), cnst.user_enroll_keyboard)
     elif text == cnst.ENROLL:
         READY_TO_ENROLL[uid] = m.Enroll_info(uid)
-        vk.send_message_keyboard(uid, cnst.ACCEPT_NAME, cnst.CANCEL)
+        vk.send_message_keyboard(uid, cnst.ACCEPT_NAME, cnst.user_cancel_keyboard)
     elif text == cnst.CANCEL:
         if uid in READY_TO_ENROLL:
             del READY_TO_ENROLL[uid]
