@@ -48,7 +48,11 @@ def admin_message_processing(uid, uname, text):
     elif text == cnst.ADD_ADMIN:
         pass
     elif IN_ADMIN_PANEL[uid] == cnst.BROADCAST:
-        pass
+        count = db.vk_emailing_to_all_subs(text)
+        vk.send_message(uid, cnst.BROADCAST_COMPLETED.format(count))
+        IN_ADMIN_PANEL[uid] = ''
+    else:
+        vk.send_message(uid, cnst.DEFAULT_ANSWER)
 
 
 def message_processing(uid, text):

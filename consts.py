@@ -33,6 +33,7 @@ ADMIN_KEY_WORDS = ['admin', 'админ']
 YOU_NOT_ADMIN = 'Вы не являйтесь администратором.'
 ADMIN_EXIT = 'Выйти из меню администратора'
 ACCEPT_BROADCAST = 'Введите сообщение для рассылки:'
+BROADCAST_COMPLETED = 'Сообщение разослано {} пользователям.'
 
 group_join_text = '''
 Приветствуем, {!s}! 

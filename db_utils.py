@@ -30,18 +30,22 @@ with sqlite3.connect(config.db_name) as connection:
     connection.commit()
 
 
-
-def vk_emailing(users, text):
+def vk_emailing_to_all_subs(text):
     """
     Разослать текст всем подписчикам группы
     """
+    count = 0
     arr = []
-    for uid in users:
-        arr.append(uid)
+    uids = get_bot_followers(only_id=True)
+    for uid in uids:
+        if vklib.is_messages_allowed(uid):
+            arr.append(uid)
+            count += 1
         if len(arr) == 100:
             vklib.send_message_much(arr, text)
             arr = []
     vklib.send_message_much(arr, text)
+    return count
 
 
 def get_bot_admins():
@@ -133,7 +137,7 @@ def get_bot_followers(only_id=False):
         res = cursor.execute(sql).fetchall()
         print(res)
         for x in res:
-            item = x[1] if only_id else m.Follower(x[1], x[3],x[2])
+            item = x[1] if only_id else m.Follower(x[1], x[3], x[2])
             arr.append(item)
         connection.commit()
     return arr

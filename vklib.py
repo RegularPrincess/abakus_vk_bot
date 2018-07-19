@@ -9,6 +9,22 @@ import config
 api_ver = config.api_ver
 
 
+def is_messages_allowed(uid, group_id=config.group_id):
+    data = {
+        'group_id': group_id,
+        'user_id': uid,
+        'access_token': config.token,
+        'v': api_ver
+    }
+    res = requests.post(config.vk_api_url + 'messages.isMessagesFromGroupAllowed', data=data)
+    try:
+        d = json.loads(res.text)['response']['is_allowed']
+        dint = int(d)
+        return dint == 1
+    except Exception:
+        print(res.text)
+        return False
+
 def send_message(user_id, text):
     """
     Send VK message
