@@ -1,6 +1,10 @@
 import model as m
-import consts as c
+import consts as cnst
 import vklib as vk
+import db_utils as db
+
+
+READY_TO_ENROLL = {}
 
 
 def group_join(uid):
@@ -8,14 +12,36 @@ def group_join(uid):
     if uname == '':
         uname = 'No Name'
     m.add_bot_follower(uid, uname)
+    vk.send_message_keyboard(uid, cnst.WELCOME_TO_COURSE, cnst.user_enroll_keyboard)
+    return 'ok'
 
 
 def message_processing(uid, text):
-    if text.lover() in c.START_WORDS:
-        uname = vk.get_user_name(uid)
-        vk.send_message_keyboard(uid, c.WELCOME_TO_COURSE.format(uname), c.user_enroll_keyboard)
+    uname = vk.get_user_name(uid)
+    if text.lover() in cnst.START_WORDS:
+        vk.send_message_keyboard(uid, cnst.WELCOME_TO_COURSE.format(uname), cnst.user_enroll_keyboard)
+    elif text == cnst.ENROLL:
+        READY_TO_ENROLL[uid] = m.Enroll_info(uid)
+        vk.send_message_keyboard(uid, cnst.ACCEPT_NAME, cnst.CANCEL)
+    elif text == cnst.CANCEL:
+        if uid in READY_TO_ENROLL:
+            del READY_TO_ENROLL[uid]
+        vk.send_message_keyboard(uid, cnst.CANCELED_MESSAGE, cnst.user_enroll_keyboard)
+    # Обработка ввода данных пользователя
+    elif uid in READY_TO_ENROLL:
+        if not READY_TO_ENROLL[uid].name_is_sign():
+            READY_TO_ENROLL[uid].set_name(text)
+            vk.send_message(uid, cnst.ACCEPT_EMAIL)
+        elif not READY_TO_ENROLL[uid].email_is_sign():
+            READY_TO_ENROLL[uid].set_email(text)
+            vk.send_message(uid, cnst.ACCEPT_NUMBER)
+        elif not READY_TO_ENROLL[uid].number_is_sign():
+            READY_TO_ENROLL[uid].set_number(text)
+            vk.send_message(uid, cnst.ENROLL_COMPLETED)
+    return 'ok'
 
 
 def group_leave(uid):
     uname = vk.get_user_name(uid)
-    vk.send_message_keyboard(uid, c.GROUP_LEAVE_MESSAGE.format(uname), c.EMPTY_KEYBOARD)
+    vk.send_message_keyboard(uid, cnst.GROUP_LEAVE_MESSAGE.format(uname), cnst.EMPTY_KEYBOARD)
+    return 'ok'

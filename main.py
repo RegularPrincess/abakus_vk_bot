@@ -6,9 +6,7 @@ from flask import request
 from flask import json
 
 import service as s
-import vklib
 import config
-import consts as c
 
 token = config.token
 confirmation_token = config.confirmation_token
@@ -18,24 +16,8 @@ admin_id = config.admin_id
 admin_name = config.admin_name
 db_name = config.db_name
 bot_name = config.bot_name
-
 vk_api_url = config.vk_api_url
 
-READY_TO_EMAILING = []
-READY_TO_ADD_NEW_ADMIN = {}
-READY_TO_ADD_NEW_PRODUCT = {}
-READY_TO_ADD_NEW_CATEGORY = {}
-READY_TO_DOSTAVKA = {}
-READY_TO_EDIT_CATEGORY = {}
-READY_TO_EDIT_PRODUCT = {}
-READY_TO_ADD_BASKET = {}
-
-PRODUCT_LIST = []
-PRODUCT_CATEG_LIST = []
-CATEGORY_LIST = []
-
-LAST_COMMAND = {}
-CANCEL = {}
 
 app = Flask(__name__)
 
@@ -57,17 +39,18 @@ def processing():
         return confirmation_token
     elif data['type'] == 'group_join':
         uid = data['object']['user_id']
-        s.group_join(uid)
-        return 'ok'
+        answer = s.group_join(uid)
+        return answer
     elif data['type'] == 'message_new':
         uid = data['object']['from_id']
         text = data['object']['text']
-        s.message_processing(uid, text)
-        return 'ok'
+        answer = s.message_processing(uid, text)
+        return answer
     elif data['type'] == 'group_leave':
         uid = data['object']['user_id']
-        s.group_leave(uid)
-        return 'ok'
+        answer = s.group_leave(uid)
+        return answer
+
 
 def main(argv):
     #port = int(argv[0])
