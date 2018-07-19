@@ -14,7 +14,7 @@ def group_join(uid):
     uname = vk.get_user_name(uid)
     if uname == '':
         uname = 'No Name'
-    m.add_bot_follower(uid, uname)
+    db.add_bot_follower(uid, uname)
     vk.send_message_keyboard(uid, cnst.WELCOME_TO_COURSE, cnst.user_enroll_keyboard)
     return 'ok'
 
@@ -46,5 +46,6 @@ def message_processing(uid, text):
 
 def group_leave(uid):
     uname = vk.get_user_name(uid)
+    db.set_bot_follower_status(uid, cnst.USER_LEAVE_STATUS)
     vk.send_message_keyboard(uid, cnst.GROUP_LEAVE_MESSAGE.format(uname), cnst.EMPTY_KEYBOARD)
     return 'ok'

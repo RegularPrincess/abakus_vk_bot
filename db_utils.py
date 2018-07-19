@@ -6,6 +6,7 @@ from sqlite3 import dbapi2 as sqlite3
 import vklib
 import config
 import model as m
+import consts as cnst
 
 
 with sqlite3.connect(config.db_name) as connection:
@@ -105,7 +106,7 @@ def set_bot_follower_status(uid, status):
         connection.commit()
 
 
-def add_bot_follower(uid, name, status="member"):
+def add_bot_follower(uid, name, status=cnst.USER_SUB_STATUS):
     """
     Добавить подписчика бота
     """

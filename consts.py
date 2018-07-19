@@ -21,6 +21,9 @@ ACCEPT_NUMBER = 'Введите Ваш номер телефона.'
 ENROLL_COMPLETED = 'Мы всё записали и в ближайшее время с Вами свяжется наш администратор!'
 
 CANCELED_MESSAGE = 'Действие успешно отменено.'
+USER_LEAVE_STATUS = 'leave'
+USER_SUB_STATUS = 'member'
+USER_RETURN_STATUS = 'return'
 
 group_join_text = '''
 Приветствуем, {!s}! 
