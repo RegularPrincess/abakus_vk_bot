@@ -15,13 +15,13 @@ def group_join(uid):
     if uname == '':
         uname = 'No Name'
     db.add_bot_follower(uid, uname)
-    vk.send_message_keyboard(uid, cnst.WELCOME_TO_COURSE, cnst.user_enroll_keyboard)
+    vk.send_message_keyboard(uid, cnst.WELCOME_TO_COURSE.format(uname), cnst.user_enroll_keyboard)
     return 'ok'
 
 
 def message_processing(uid, text):
     uname = vk.get_user_name(uid)
-    if text.lover() in cnst.START_WORDS:
+    if text.lower() in cnst.START_WORDS:
         vk.send_message_keyboard(uid, cnst.WELCOME_TO_COURSE.format(uname), cnst.user_enroll_keyboard)
     elif text == cnst.ENROLL:
         READY_TO_ENROLL[uid] = m.Enroll_info(uid)
