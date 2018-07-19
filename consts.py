@@ -69,87 +69,60 @@ admin_panel_text = '''
 |||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||| 
 '''
 
-admin_menu_keyboard = {
-                "one_time": False,
-                "buttons": [
-                    [{
-                        "action": {
-                        "type": "text",
-                            "payload": "{\"button\": \"1\"}",
-                            "label": BROADCAST
-                        },
-                        "color": "default"
-                    },
-                    {
-                        "action": {
-                            "type": "text",
-                            "payload": "{\"button\": \"2\"}",
-                            "label": ADD_GOODS
-                        },
-                        "color": "default"
-                    }],
-
-
-                    [{
-                        "action": {
-                            "type": "text",
-                            "payload": "{\"button\": \"3\"}",
-                            "label": ADD_CAT
-                        },
-                        "color": "default"
-                    }],
-
-
-                    [{
-                        "action": {
-                            "type": "text",
-                            "payload": "{\"button\": \"4\"}",
-                            "label": EDIT_CAT
-                        },
-                        "color": "default"
-                    },
-                    {
-                        "action": {
-                            "type": "text",
-                            "payload": "{\"button\": \"5\"}",
-                            "label": EDIT_GOODS
-                        },
-                        "color": "default"
-                    }],
-
-
-                    [{
-                        "action": {
-                            "type": "text",
-                            "payload": "{\"button\": \"6\"}",
-                            "label": ADD_ADMIN
-                        },
-                        "color": "default"
-                    },
-                    {
-                        "action": {
-                            "type": "text",
-                            "payload": "{\"button\": \"7\"}",
-                            "label": ADMINS
-                        },
-                        "color": "default"
-                    }],
-                    [{
-                        "action": {
-                            "type": "text",
-                            "payload": "{\"button\": \"8\"}",
-                            "label": SUBS
-                        },
-                        "color": "default"
-                    },
-                    {
-                        "action": {
-                            "type": "text",
-                            "payload": "{\"button\": \"9\"}",
-                            "label": MENU
-                        },
-                        "color": "default"
-                    }]
-                ]
-            }
-
+# admin_menu_keyboard = {
+#                 "one_time": False,
+#                 "buttons": [
+#                     [{
+#                         "action": {
+#                         "type": "text",
+#                             "payload": "{\"button\": \"1\"}",
+#                             "label": BROADCAST
+#                         },
+#                         "color": "default"
+#                     }],
+#
+#                     {
+#                         "action": {
+#                             "type": "text",
+#                             "payload": "{\"button\": \"5\"}",
+#                             "label": EDIT_GOODS
+#                         },
+#                         "color": "default"
+#                     }],
+#
+#
+#                     [{
+#                         "action": {
+#                             "type": "text",
+#                             "payload": "{\"button\": \"6\"}",
+#                             "label": ADD_ADMIN
+#                         },
+#                         "color": "default"
+#                     },
+#                     {
+#                         "action": {
+#                             "type": "text",
+#                             "payload": "{\"button\": \"7\"}",
+#                             "label": ADMINS
+#                         },
+#                         "color": "default"
+#                     }],
+#                     [{
+#                         "action": {
+#                             "type": "text",
+#                             "payload": "{\"button\": \"8\"}",
+#                             "label": SUBS
+#                         },
+#                         "color": "default"
+#                     },
+#                     {
+#                         "action": {
+#                             "type": "text",
+#                             "payload": "{\"button\": \"9\"}",
+#                             "label": MENU
+#                         },
+#                         "color": "default"
+#                     }]
+#                 ]
+#             }
+#
