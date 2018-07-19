@@ -2,7 +2,7 @@
 ## -*- coding: utf-8 -*-
 #Кнопки
 
-ENROLL = "Записаться"
+ENROLL = "Записаться на беспоатное занятие"
 CANCEL = "⛔ Отмена"
 
 BROADCAST = "Рассылка"
@@ -20,14 +20,19 @@ ACCEPT_NAME = 'Как к Вам обращаться?'
 ACCEPT_EMAIL = 'Введите Ваш email.'
 ACCEPT_NUMBER = 'Введите Ваш номер телефона.'
 ENROLL_COMPLETED = 'Мы всё записали и в ближайшее время с Вами свяжется наш администратор!'
-
 CANCELED_MESSAGE = 'Действие успешно отменено.'
+DEFAULT_ANSWER = 'Ничего не понятно('
+
 USER_LEAVE_STATUS = 'leave'
 USER_SUB_STATUS = 'member'
 USER_RETURN_STATUS = 'return'
 
-NOTIFY_ADMIN = 'Пользователь с id {} записался на бесплатное занятие. ' \
+NOTIFY_ADMIN = 'Пользователь с id{} записался на бесплатное занятие. ' \
                'Его данные: обращение - {}, email - {}, номер телефона - {}.'
+ADMIN_KEY_WORDS = ['admin', 'админ']
+YOU_NOT_ADMIN = 'Вы не являйтесь администратором.'
+ADMIN_EXIT = 'Выйти из меню администратора'
+ACCEPT_BROADCAST = 'Введите сообщение для рассылки:'
 
 group_join_text = '''
 Приветствуем, {!s}! 
@@ -49,7 +54,7 @@ user_enroll_keyboard = {
                             "payload": "{\"button\": \"1\"}",
                             "label": ENROLL
                         },
-                        "color": "default"
+                        "color": "positive"
                     }],
                 ]
             }
@@ -70,66 +75,51 @@ user_cancel_keyboard = {
             }
 
 
-admin_panel_text = '''
-||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||| 
-||||||||||||||||||||||||| 🔥 ПАНЕЛЬ АДМИНИСТРАТОРА 🔥 |||||||||||||||||||||||||| 
-|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||| 
-'''
+admin_panel_text = '''🔥 ПАНЕЛЬ АДМИНИСТРАТОРА 🔥'''
 
-# admin_menu_keyboard = {
-#                 "one_time": False,
-#                 "buttons": [
-#                     [{
-#                         "action": {
-#                         "type": "text",
-#                             "payload": "{\"button\": \"1\"}",
-#                             "label": BROADCAST
-#                         },
-#                         "color": "default"
-#                     }],
-#
-#                     {
-#                         "action": {
-#                             "type": "text",
-#                             "payload": "{\"button\": \"5\"}",
-#                             "label": EDIT_GOODS
-#                         },
-#                         "color": "default"
-#                     }],
-#
-#
-#                     [{
-#                         "action": {
-#                             "type": "text",
-#                             "payload": "{\"button\": \"6\"}",
-#                             "label": ADD_ADMIN
-#                         },
-#                         "color": "default"
-#                     },
-#                     {
-#                         "action": {
-#                             "type": "text",
-#                             "payload": "{\"button\": \"7\"}",
-#                             "label": ADMINS
-#                         },
-#                         "color": "default"
-#                     }],
-#                     [{
-#                         "action": {
-#                             "type": "text",
-#                             "payload": "{\"button\": \"8\"}",
-#                             "label": SUBS
-#                         },
-#                         "color": "default"
-#                     },
-#                     {
-#                         "action": {
-#                             "type": "text",
-#                             "payload": "{\"button\": \"9\"}",
-#                             "label": MENU
-#                         },
-#                         "color": "default"
-#                     }]
-#                 ]
-#             }
-#
+admin_menu_keyboard = {
+    "one_time": False,
+    "buttons": [
+      [{
+        "action": {
+          "type": "text",
+          "payload": "{\"button\": \"1\"}",
+          "label": BROADCAST
+        },
+        "color": "default"
+      },
+     {
+        "action": {
+          "type": "text",
+          "payload": "{\"button\": \"2\"}",
+          "label": SUBS
+        },
+        "color": "default"
+      }],
+      [{
+        "action": {
+          "type": "text",
+          "payload": "{\"button\": \"3\"}",
+          "label": ADMINS
+        },
+        "color": "default"
+      },
+     {
+        "action": {
+          "type": "text",
+          "payload": "{\"button\": \"4\"}",
+          "label": ADD_ADMIN
+        },
+        "color": "default"
+      }],
+      [{
+        "action": {
+          "type": "text",
+          "payload": "{\"button\": \"5\"}",
+          "label": ADMIN_EXIT
+        },
+        "color": "default"
+      }]
+    ]
+  }
+

@@ -8,6 +8,7 @@ import db_utils as db
 
 
 READY_TO_ENROLL = {}
+IN_ADMIN_PANEL = {}
 
 
 def group_join(uid):
@@ -24,16 +25,41 @@ def del_uid_from_dict(uid, dict_):
         del dict_[uid]
 
 
+def not_ready_to_enroll(uid):
+    return uid not in READY_TO_ENROLL
+
+
 def send_message_admins(info):
     admins = db.get_list_bot_admins()
     vk.send_message_much(admins, cnst.NOTIFY_ADMIN.format(info.uid, info.name, info.email, info.number))
 
 
+def admin_message_processing(uid, uname, text):
+    if text == cnst.ADMIN_EXIT:
+        del_uid_from_dict(uid, IN_ADMIN_PANEL)
+        vk.send_message_keyboard(uid, cnst.WELCOME_TO_COURSE.format(uname), cnst.user_enroll_keyboard)
+    elif text == cnst.BROADCAST:
+        IN_ADMIN_PANEL[uid] = cnst.BROADCAST
+        vk.send_message(uid, cnst.ACCEPT_BROADCAST)
+    elif text == cnst.SUBS:
+        pass
+    elif text == cnst.ADMINS:
+        pass
+    elif text == cnst.ADD_ADMIN:
+        pass
+    elif IN_ADMIN_PANEL[uid] == cnst.BROADCAST:
+        pass
+
+
 def message_processing(uid, text):
     uname = vk.get_user_name(uid)
+    if uid in IN_ADMIN_PANEL:
+        admin_message_processing(uid, uname, text)
+        return 'ok'
+
     if text.lower() in cnst.START_WORDS:
         vk.send_message_keyboard(uid, cnst.WELCOME_TO_COURSE.format(uname), cnst.user_enroll_keyboard)
-    elif text == cnst.ENROLL:
+    elif text == cnst.ENROLL or (text.lower() in cnst.USER_ACCEPT_WORDS and not_ready_to_enroll(uid)):
         READY_TO_ENROLL[uid] = m.Enroll_info(uid)
         vk.send_message_keyboard(uid, cnst.ACCEPT_NAME, cnst.user_cancel_keyboard)
     elif text == cnst.CANCEL:
@@ -52,6 +78,14 @@ def message_processing(uid, text):
             send_message_admins(READY_TO_ENROLL[uid])
             del_uid_from_dict(uid, READY_TO_ENROLL)
             vk.send_message_keyboard(uid, cnst.ENROLL_COMPLETED, cnst.user_enroll_keyboard)
+    elif text in cnst.ADMIN_KEY_WORDS and not_ready_to_enroll(uid):
+        if db.is_admin(uid):
+            IN_ADMIN_PANEL[uid] = ''
+            vk.send_message_keyboard(uid, cnst.admin_panel_text, cnst.admin_menu_keyboard)
+        else:
+            vk.send_message_keyboard(uid, cnst.YOU_NOT_ADMIN, cnst.user_enroll_keyboard)
+    else:
+        vk.send_message(uid, cnst.DEFAULT_ANSWER)
     return 'ok'
 
 

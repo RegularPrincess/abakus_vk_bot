@@ -76,6 +76,11 @@ def get_list_bot_admins():
     return arr
 
 
+def is_admin(uid):
+    admins = get_list_bot_admins()
+    return uid in admins
+
+
 def delete_admin(admin_id):
     """
     Удалить админа
