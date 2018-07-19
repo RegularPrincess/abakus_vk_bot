@@ -19,6 +19,16 @@ def group_join(uid):
     return 'ok'
 
 
+def del_uid_from_dict(uid, dict_):
+    if uid in dict_:
+        del dict_[uid]
+
+
+def send_message_admins(info):
+    admins = db.get_list_bot_admins()
+    vk.send_message_much(admins, cnst.NOTIFY_ADMIN.format(info.uid, info.name, info.email, info.number))
+
+
 def message_processing(uid, text):
     uname = vk.get_user_name(uid)
     if text.lower() in cnst.START_WORDS:
@@ -27,8 +37,7 @@ def message_processing(uid, text):
         READY_TO_ENROLL[uid] = m.Enroll_info(uid)
         vk.send_message_keyboard(uid, cnst.ACCEPT_NAME, cnst.user_cancel_keyboard)
     elif text == cnst.CANCEL:
-        if uid in READY_TO_ENROLL:
-            del READY_TO_ENROLL[uid]
+        del_uid_from_dict(uid, READY_TO_ENROLL)
         vk.send_message_keyboard(uid, cnst.CANCELED_MESSAGE, cnst.user_enroll_keyboard)
     # Обработка ввода данных пользователя
     elif uid in READY_TO_ENROLL:
@@ -40,7 +49,9 @@ def message_processing(uid, text):
             vk.send_message(uid, cnst.ACCEPT_NUMBER)
         elif not READY_TO_ENROLL[uid].number_is_sign():
             READY_TO_ENROLL[uid].set_number(text)
-            vk.send_message(uid, cnst.ENROLL_COMPLETED)
+            send_message_admins(READY_TO_ENROLL[uid])
+            del_uid_from_dict(uid, READY_TO_ENROLL)
+            vk.send_message_keyboard(uid, cnst.ENROLL_COMPLETED, cnst.user_enroll_keyboard)
     return 'ok'
 
 

@@ -26,6 +26,9 @@ USER_LEAVE_STATUS = 'leave'
 USER_SUB_STATUS = 'member'
 USER_RETURN_STATUS = 'return'
 
+NOTIFY_ADMIN = 'Пользователь с id {} записался на бесплатное занятие. ' \
+               'Его данные: обращение - {}, email - {}, номер телефона - {}.'
+
 group_join_text = '''
 Приветствуем, {!s}! 
 '''
