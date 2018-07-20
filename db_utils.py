@@ -136,14 +136,14 @@ def set_bot_follower_mess_allowed(uid, status):
         connection.commit()
 
 
-def add_bot_follower(uid, name, status=cnst.USER_SUB_STATUS):
+def add_bot_follower(uid, name, status=cnst.USER_SUB_STATUS, msg_allowed=0):
     """
     Добавить подписчика бота
     """
     with sqlite3.connect(config.db_name) as connection:
         cursor = connection.cursor()
-        sql = '''INSERT OR IGNORE INTO known_users (uid, status, name) VALUES (?, ?, ?)'''
-        cursor.execute(sql, (uid, status, name))
+        sql = '''INSERT OR IGNORE INTO known_users (uid, status, name, mess_allowed) VALUES (?, ?, ?, ?)'''
+        cursor.execute(sql, (uid, status, name, msg_allowed))
         connection.commit()
 
 

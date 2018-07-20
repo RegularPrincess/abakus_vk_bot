@@ -19,7 +19,10 @@ def group_join(uid):
     uname = vk.get_user_name(uid)
     if uname == '':
         uname = 'No Name'
-    db.add_bot_follower(uid, uname)
+    msg_allowed = 0
+    if vk.is_messages_allowed(uid):
+        msg_allowed = 1
+    db.add_bot_follower(uid, uname, msg_allowed=msg_allowed)
     vk.send_message_keyboard(uid, cnst.WELCOME_TO_COURSE.format(uname), cnst.user_enroll_keyboard)
     return 'ok'
 
@@ -183,7 +186,10 @@ def parse_group(members_count, group_id=cfg.group_id):
             try:
                 if not user_id in follower_list:
                     username = vk.get_user_name(user_id)
-                    db.add_bot_follower(user_id, username)
+                    msg_allowed = 0
+                    if vk.is_messages_allowed(user_id):
+                        msg_allowed = 1
+                    db.add_bot_follower(user_id, username, msg_allowed=msg_allowed)
                     users_added += 1
             except Exception as e:
                 pass
