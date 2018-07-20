@@ -19,8 +19,7 @@ def is_messages_allowed(uid, group_id=config.group_id):
     res = requests.post(config.vk_api_url + 'messages.isMessagesFromGroupAllowed', data=data)
     try:
         d = json.loads(res.text)['response']['is_allowed']
-        dint = int(d)
-        return dint == 1
+        return d == 1
     except Exception:
         print(res.text)
         return False

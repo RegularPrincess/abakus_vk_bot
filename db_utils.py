@@ -16,7 +16,8 @@ with sqlite3.connect(config.db_name) as connection:
         uid INTEGER UNIQUE NOT NULL,
         status TEXT NOT NULL,
         name TEXT NOT NULL,
-        written_on_course INTEGER DEFAULT 0)'''
+        written_on_course INTEGER DEFAULT 0,
+        mess_allowed INTEGER DEFAULT 0)'''
     cursor.execute(sql)
     sql = '''CREATE TABLE IF NOT EXISTS admins (
         id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
@@ -30,16 +31,25 @@ with sqlite3.connect(config.db_name) as connection:
     connection.commit()
 
 
-def vk_emailing_to_all_subs(text):
-    """
-    Разослать текст всем подписчикам группы
-    """
-    count = 0
-    arr = []
+def update_mess_allowed_info():
     uids = get_bot_followers(only_id=True)
     for uid in uids:
         if vklib.is_messages_allowed(uid):
-            arr.append(uid)
+            set_bot_follower_mess_allowed(uid, 1)
+        else:
+            set_bot_follower_mess_allowed(uid, 0)
+
+
+def vk_emailing_to_all_subs(text):
+    """
+    Разослать текст всем подписчикам, кому возможно группы
+    """
+    count = 0
+    arr = []
+    users = get_bot_followers()
+    for u in users:
+        if u.is_msging_allowed():
+            arr.append(u)
             count += 1
         if len(arr) == 100:
             vklib.send_message_much(arr, text)
@@ -115,6 +125,17 @@ def set_bot_follower_status(uid, status):
         connection.commit()
 
 
+def set_bot_follower_mess_allowed(uid, status):
+    """
+    status = 0 or 1
+    """
+    with sqlite3.connect(config.db_name) as connection:
+        cursor = connection.cursor()
+        sql = '''UPDATE known_users SET mess_allowed=? WHERE uid=?'''
+        cursor.execute(sql, (status, uid))
+        connection.commit()
+
+
 def add_bot_follower(uid, name, status=cnst.USER_SUB_STATUS):
     """
     Добавить подписчика бота
@@ -137,7 +158,7 @@ def get_bot_followers(only_id=False):
         res = cursor.execute(sql).fetchall()
         print(res)
         for x in res:
-            item = x[1] if only_id else m.Follower(x[1], x[3], x[2])
+            item = x[1] if only_id else m.Follower(x[1], x[3], x[2], x[4], x[5])
             arr.append(item)
         connection.commit()
     return arr

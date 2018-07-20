@@ -1,5 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+import os
+
+import requests
 
 import model as m
 import consts as cnst
@@ -42,12 +45,14 @@ def admin_message_processing(uid, uname, text):
         IN_ADMIN_PANEL[uid] = cnst.BROADCAST
         vk.send_message(uid, cnst.ACCEPT_BROADCAST)
     elif text == cnst.SUBS:
-        pass
+        vk.send_message(uid, cnst.PLEASE_WAIT)
+        vk_doc_link = make_subs_file(uid)
+        vk.send_message_doc(uid, '', vk_doc_link)
     elif text == cnst.ADMINS:
         pass
     elif text == cnst.ADD_ADMIN:
         pass
-    elif IN_ADMIN_PANEL[uid] == cnst.BROADCAST:
+    elif True: #IN_ADMIN_PANEL[uid] == cnst.BROADCAST:
         count = db.vk_emailing_to_all_subs(text)
         vk.send_message(uid, cnst.BROADCAST_COMPLETED.format(count))
         IN_ADMIN_PANEL[uid] = ''
@@ -57,7 +62,7 @@ def admin_message_processing(uid, uname, text):
 
 def message_processing(uid, text):
     uname = vk.get_user_name(uid)
-    if uid in IN_ADMIN_PANEL:
+    if True: #uid in IN_ADMIN_PANEL:
         admin_message_processing(uid, uname, text)
         return 'ok'
 
@@ -98,3 +103,32 @@ def group_leave(uid):
     db.set_bot_follower_status(uid, cnst.USER_LEAVE_STATUS)
     vk.send_message_keyboard(uid, cnst.GROUP_LEAVE_MESSAGE.format(uname), cnst.EMPTY_KEYBOARD)
     return 'ok'
+
+
+def make_subs_file(uid):
+    db.update_mess_allowed_info()
+    bot_followers = db.get_bot_followers()
+    if len(bot_followers) == 0:
+        text = 'В боте ещё нет подписчиков'
+        vk.send_message(uid, text)
+        return 'ok'
+    filename = 'subs.csv'
+    out = open(filename, 'a')
+    text = 'ID; Имя; Статус; Подписан на рассылку'
+    out.write(text)
+    for x in bot_followers:
+        text = '{};{};{};{}'.format(x.uid, x.name, x.status, x.mess_allowed)
+        out.write(text)
+    out.close()
+    res = vk.get_doc_upload_server1(uid)
+    print(res)
+    upload_url = res['response']['upload_url']
+    files = {'file': open(filename, 'r')}
+    response = requests.post(upload_url, files=files)
+    result = response.json()
+    print(result)
+    r = vk.save_doc(result['file'])
+    vk_doc_link = 'doc{!s}_{!s}'.format(r['response'][0]['owner_id'], r['response'][0]['id'])
+    print(vk_doc_link)
+    os.remove(filename)
+    return vk_doc_link

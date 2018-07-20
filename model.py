@@ -9,10 +9,15 @@ class Admin:
 
 
 class Follower:
-    def __init__(self, uid, name, status='member'):
+    def __init__(self, uid, name, status='member', written_on_course=0, mess_allowed=0):
         self.uid = uid
         self.name = name
         self.status = status
+        self.written_on_course = written_on_course
+        self.mess_allowed = mess_allowed
+
+    def is_msging_allowed(self):
+        return self.mess_allowed == 1
 
 
 class Enroll_info:

@@ -22,6 +22,7 @@ ACCEPT_NUMBER = 'Введите Ваш номер телефона.'
 ENROLL_COMPLETED = 'Мы всё записали и в ближайшее время с Вами свяжется наш администратор!'
 CANCELED_MESSAGE = 'Действие успешно отменено.'
 DEFAULT_ANSWER = 'Ничего не понятно('
+PLEASE_WAIT = 'Это может занять некоторое время...'
 
 USER_LEAVE_STATUS = 'leave'
 USER_SUB_STATUS = 'member'
