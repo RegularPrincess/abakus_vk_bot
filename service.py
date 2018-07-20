@@ -61,12 +61,14 @@ def admin_message_processing(uid, uname, text):
         msg += cnst.ADMIN_REMOVING
         vk.send_message_keyboard(uid, msg, cnst.cancel_keyboard)
     elif text == cnst.ADD_ADMIN:
-        pass
+        IN_ADMIN_PANEL[uid] = cnst.ADD_ADMIN
+        vk.send_message_keyboard(uid, cnst.ADMIN_ADDING, cnst.cancel_keyboard)
     elif text.lower() == cnst.PARSE_GROUP:
         if db.is_admin(uid):
             members_count = get_group_count()
             msg = cnst.MEMBERS_COUNT.format(members_count)
             vk.send_message(uid, msg)
+            vk.send_message(uid, cnst.PLEASE_WAIT)
             added_count = parse_group(members_count)
             msg = cnst.ADDED_COUNT.format(added_count)
             vk.send_message(uid, msg)
@@ -85,6 +87,17 @@ def admin_message_processing(uid, uname, text):
             db.delete_admin(admin_id)
             msg = cnst.ADMIN_REMOVED
             vk.send_message_keyboard(uid, msg, cnst.admin_menu_keyboard)
+            IN_ADMIN_PANEL[uid] = ''
+        except ValueError:
+            msg = cnst.VALUE_ERROR
+            vk.send_message(uid, msg)
+    elif IN_ADMIN_PANEL[uid] == cnst.ADD_ADMIN:
+        try:
+            admin_id = int(text)
+            name = vk.get_user_name(admin_id)
+            db.add_bot_admin(uid, name)
+            vk.send_message_keyboard(uid, cnst.ADMIN_SUCCCES_ADDED, cnst.admin_menu_keyboard)
+            IN_ADMIN_PANEL[uid] = ''
         except ValueError:
             msg = cnst.VALUE_ERROR
             vk.send_message(uid, msg)
