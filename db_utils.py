@@ -49,7 +49,7 @@ def vk_emailing_to_all_subs(text):
     users = get_bot_followers()
     for u in users:
         if u.is_msging_allowed():
-            arr.append(u)
+            arr.append(u.uid)
             count += 1
         if len(arr) == 100:
             vklib.send_message_much(arr, text)
