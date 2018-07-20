@@ -8,6 +8,7 @@ import model as m
 import consts as cnst
 import vklib as vk
 import db_utils as db
+import config as cfg
 
 
 READY_TO_ENROLL = {}
@@ -86,12 +87,26 @@ def message_processing(uid, text):
 
     if text.lower() in cnst.START_WORDS:
         vk.send_message_keyboard(uid, cnst.WELCOME_TO_COURSE.format(uname), cnst.user_enroll_keyboard)
+
     elif text == cnst.ENROLL or (text.lower() in cnst.USER_ACCEPT_WORDS and not_ready_to_enroll(uid)):
         READY_TO_ENROLL[uid] = m.Enroll_info(uid)
         vk.send_message_keyboard(uid, cnst.ACCEPT_NAME, cnst.cancel_keyboard)
+
+    elif text.lower() == cnst.PARSE_GROUP:
+        if db.is_admin(uid):
+            members_count = get_group_count()
+            msg = cnst.MEMBERS_COUNT.format(members_count)
+            vk.send_message(uid, msg)
+            added_count = parse_group(members_count)
+            msg = cnst.ADDED_COUNT.format(added_count)
+            vk.send_message(uid, msg)
+        else:
+            vk.send_message_keyboard(uid, cnst.YOU_NOT_ADMIN, cnst.user_enroll_keyboard)
+
     elif text == cnst.CANCEL:
         del_uid_from_dict(uid, READY_TO_ENROLL)
         vk.send_message_keyboard(uid, cnst.CANCELED_MESSAGE, cnst.user_enroll_keyboard)
+
     # Обработка ввода данных пользователя
     elif uid in READY_TO_ENROLL:
         if not READY_TO_ENROLL[uid].name_is_sign():
@@ -105,6 +120,8 @@ def message_processing(uid, text):
             send_message_admins(READY_TO_ENROLL[uid])
             del_uid_from_dict(uid, READY_TO_ENROLL)
             vk.send_message_keyboard(uid, cnst.ENROLL_COMPLETED, cnst.user_enroll_keyboard)
+
+    # Вход для админа
     elif text in cnst.ADMIN_KEY_WORDS and not_ready_to_enroll(uid):
         if db.is_admin(uid):
             IN_ADMIN_PANEL[uid] = ''
@@ -150,3 +167,25 @@ def make_subs_file(uid):
     print(vk_doc_link)
     os.remove(filename)
     return vk_doc_link
+
+
+def get_group_count(group_id=cfg.group_id):
+    members_count = vk.get_count_group_followers(group_id)
+    return int(members_count)
+
+
+def parse_group(members_count, group_id=cfg.group_id):
+    follower_list = db.get_bot_followers(only_id=True)
+    iterations = members_count // 1000 + 1
+    users_added = 0
+    for x in range(iterations):
+        users = vk.get_group_memebers(group_id, offset=x * 1000, count=1000)
+        for user_id in users:
+            try:
+                if not user_id in follower_list:
+                    username = vk.get_user_name(user_id)
+                    db.add_bot_follower(user_id, username)
+                    users_added += 1
+            except Exception as e:
+                pass
+    return users_added

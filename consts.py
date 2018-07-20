@@ -23,6 +23,8 @@ ENROLL_COMPLETED = 'Мы всё записали и в ближайшее вре
 CANCELED_MESSAGE = 'Действие успешно отменено.'
 DEFAULT_ANSWER = 'Ничего не понятно('
 PLEASE_WAIT = 'Это может занять некоторое время...'
+MEMBERS_COUNT = 'В группе {0} пользователей'
+ADDED_COUNT = 'Добавлено {0} пользователей в базу'
 
 USER_LEAVE_STATUS = 'leave'
 USER_SUB_STATUS = 'member'
@@ -37,7 +39,8 @@ ACCEPT_BROADCAST = 'Введите сообщение для рассылки:'
 BROADCAST_COMPLETED = 'Сообщение разослано {} пользователям.'
 ADMIN_REMOVING = 'Для удаления администратора отправте его целочисленный id.'
 VALUE_ERROR = 'Не корректно! Введите только цифры id.'
-ADMIN_REMOVED = 'Администратор {} успешно удален!'
+ADMIN_REMOVED = 'Администратор успешно удален!'
+PARSE_GROUP = 'parsegroup'
 
 group_join_text = '''
 Приветствуем, {!s}! 
