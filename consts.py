@@ -35,6 +35,9 @@ YOU_NOT_ADMIN = 'Вы не являйтесь администратором.'
 ADMIN_EXIT = 'Выйти из меню администратора'
 ACCEPT_BROADCAST = 'Введите сообщение для рассылки:'
 BROADCAST_COMPLETED = 'Сообщение разослано {} пользователям.'
+ADMIN_REMOVING = 'Для удаления администратора отправте его целочисленный id.'
+VALUE_ERROR = 'Не корректно! Введите только цифры id.'
+ADMIN_REMOVED = 'Администратор {} успешно удален!'
 
 group_join_text = '''
 Приветствуем, {!s}! 
@@ -62,7 +65,7 @@ user_enroll_keyboard = {
             }
 
 
-user_cancel_keyboard = {
+cancel_keyboard = {
                 "one_time": False,
                 "buttons": [
                     [{

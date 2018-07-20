@@ -43,13 +43,19 @@ def admin_message_processing(uid, uname, text):
         vk.send_message_keyboard(uid, cnst.WELCOME_TO_COURSE.format(uname), cnst.user_enroll_keyboard)
     elif text == cnst.BROADCAST:
         IN_ADMIN_PANEL[uid] = cnst.BROADCAST
-        vk.send_message_keyboard(uid, cnst.ACCEPT_BROADCAST, cnst.user_cancel_keyboard)
+        vk.send_message_keyboard(uid, cnst.ACCEPT_BROADCAST, cnst.cancel_keyboard)
     elif text == cnst.SUBS:
         vk.send_message(uid, cnst.PLEASE_WAIT)
         vk_doc_link = make_subs_file(uid)
         vk.send_message_doc(uid, '', vk_doc_link)
     elif text == cnst.ADMINS:
-        pass
+        IN_ADMIN_PANEL[uid] = cnst.ADMINS
+        admins = db.get_bot_admins()
+        msg = 'Администраторы: \n\n'
+        for a in admins:
+            msg += '{}, id - {}\n\n'.format(a.name, a.uid)
+        msg += cnst.ADMIN_REMOVING
+        vk.send_message_keyboard(uid, msg, cnst.cancel_keyboard)
     elif text == cnst.ADD_ADMIN:
         pass
     elif text == cnst.CANCEL:
@@ -59,6 +65,15 @@ def admin_message_processing(uid, uname, text):
         count = db.vk_emailing_to_all_subs(text)
         vk.send_message(uid, cnst.BROADCAST_COMPLETED.format(count))
         IN_ADMIN_PANEL[uid] = ''
+    elif IN_ADMIN_PANEL[uid] == cnst.ADMINS:
+        try:
+            admin_id = int(text)
+            db.delete_admin(admin_id)
+            msg = cnst.ADMIN_REMOVED
+            vk.send_message_keyboard(uid, msg, cnst.admin_menu_keyboard)
+        except ValueError:
+            msg = cnst.VALUE_ERROR
+            vk.send_message(uid, msg)
     else:
         vk.send_message(uid, cnst.DEFAULT_ANSWER)
 
@@ -73,7 +88,7 @@ def message_processing(uid, text):
         vk.send_message_keyboard(uid, cnst.WELCOME_TO_COURSE.format(uname), cnst.user_enroll_keyboard)
     elif text == cnst.ENROLL or (text.lower() in cnst.USER_ACCEPT_WORDS and not_ready_to_enroll(uid)):
         READY_TO_ENROLL[uid] = m.Enroll_info(uid)
-        vk.send_message_keyboard(uid, cnst.ACCEPT_NAME, cnst.user_cancel_keyboard)
+        vk.send_message_keyboard(uid, cnst.ACCEPT_NAME, cnst.cancel_keyboard)
     elif text == cnst.CANCEL:
         del_uid_from_dict(uid, READY_TO_ENROLL)
         vk.send_message_keyboard(uid, cnst.CANCELED_MESSAGE, cnst.user_enroll_keyboard)
