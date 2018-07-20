@@ -23,7 +23,7 @@ def group_join(uid):
     if vk.is_messages_allowed(uid):
         msg_allowed = 1
     db.add_bot_follower(uid, uname, msg_allowed=msg_allowed)
-    vk.send_message_keyboard(uid, cnst.WELCOME_TO_COURSE.format(uname), cnst.user_enroll_keyboard)
+    vk.send_message_keyboard(uid, cnst.MSG_WELCOME_TO_COURSE.format(uname), cnst.KEYBOARD_USER)
     return 'ok'
 
 
@@ -42,67 +42,75 @@ def send_message_admins(info):
 
 
 def admin_message_processing(uid, uname, text):
-    if text == cnst.ADMIN_EXIT:
+    if text == cnst.MSG_ADMIN_EXIT:
         del_uid_from_dict(uid, IN_ADMIN_PANEL)
-        vk.send_message_keyboard(uid, cnst.WELCOME_TO_COURSE.format(uname), cnst.user_enroll_keyboard)
-    elif text == cnst.BROADCAST:
-        IN_ADMIN_PANEL[uid] = cnst.BROADCAST
-        vk.send_message_keyboard(uid, cnst.ACCEPT_BROADCAST, cnst.cancel_keyboard)
-    elif text == cnst.SUBS:
-        vk.send_message(uid, cnst.PLEASE_WAIT)
+        vk.send_message_keyboard(uid, cnst.MSG_WELCOME_TO_COURSE.format(uname), cnst.KEYBOARD_USER)
+
+    elif text == cnst.BTN_BROADCAST:
+        IN_ADMIN_PANEL[uid] = cnst.BTN_BROADCAST
+        vk.send_message_keyboard(uid, cnst.MSG_ACCEPT_BROADCAST, cnst.KEYBOARD_CANCEL)
+
+    elif text == cnst.BTN_SUBS:
+        vk.send_message(uid, cnst.MSG_PLEASE_STAND_BY)
         vk_doc_link = make_subs_file(uid)
         vk.send_message_doc(uid, '', vk_doc_link)
-    elif text == cnst.ADMINS:
-        IN_ADMIN_PANEL[uid] = cnst.ADMINS
+
+    elif text == cnst.BTN_ADMINS:
+        IN_ADMIN_PANEL[uid] = cnst.BTN_ADMINS
         admins = db.get_bot_admins()
         msg = 'Администраторы: \n\n'
         for a in admins:
             msg += '{}, id - {}\n\n'.format(a.name, a.uid)
-        msg += cnst.ADMIN_REMOVING
-        vk.send_message_keyboard(uid, msg, cnst.cancel_keyboard)
-    elif text == cnst.ADD_ADMIN:
-        IN_ADMIN_PANEL[uid] = cnst.ADD_ADMIN
-        vk.send_message_keyboard(uid, cnst.ADMIN_ADDING, cnst.cancel_keyboard)
-    elif text.lower() == cnst.PARSE_GROUP:
+        msg += cnst.MSG_ADMIN_REMOVING
+        vk.send_message_keyboard(uid, msg, cnst.KEYBOARD_CANCEL)
+
+    elif text == cnst.BTN_ADD_ADMIN:
+        IN_ADMIN_PANEL[uid] = cnst.BTN_ADD_ADMIN
+        vk.send_message_keyboard(uid, cnst.MSG_ADMIN_ADDING, cnst.KEYBOARD_CANCEL)
+
+    elif text.lower() == cnst.CMD_PARSE_GROUP:
         if db.is_admin(uid):
             members_count = get_group_count()
-            msg = cnst.MEMBERS_COUNT.format(members_count)
+            msg = cnst.MSG_MEMBERS_COUNT.format(members_count)
             vk.send_message(uid, msg)
-            vk.send_message(uid, cnst.PLEASE_WAIT)
+            vk.send_message(uid, cnst.MSG_PLEASE_STAND_BY)
             added_count = parse_group(members_count)
-            msg = cnst.ADDED_COUNT.format(added_count)
+            msg = cnst.MSG_ADDED_COUNT.format(added_count)
             vk.send_message(uid, msg)
         else:
-            vk.send_message_keyboard(uid, cnst.YOU_NOT_ADMIN, cnst.user_enroll_keyboard)
-    elif text == cnst.CANCEL:
+            vk.send_message_keyboard(uid, cnst.MSG_YOU_NOT_ADMIN, cnst.KEYBOARD_USER)
+    elif text == cnst.BTN_CANCEL:
         IN_ADMIN_PANEL[uid] = ''
-        vk.send_message_keyboard(uid, cnst.CANCELED_MESSAGE, cnst.admin_menu_keyboard)
-    elif IN_ADMIN_PANEL[uid] == cnst.BROADCAST:
+        vk.send_message_keyboard(uid, cnst.MSG_CANCELED_MESSAGE, cnst.KEYBOARD_ADMIN)
+
+    elif IN_ADMIN_PANEL[uid] == cnst.BTN_BROADCAST:
         count = db.vk_emailing_to_all_subs(text)
-        vk.send_message(uid, cnst.BROADCAST_COMPLETED.format(count))
+        vk.send_message_keyboard(uid, cnst.MSG_BROADCAST_COMPLETED.format(count), cnst.KEYBOARD_ADMIN)
         IN_ADMIN_PANEL[uid] = ''
-    elif IN_ADMIN_PANEL[uid] == cnst.ADMINS:
+
+    elif IN_ADMIN_PANEL[uid] == cnst.BTN_ADMINS:
         try:
             admin_id = int(text)
             db.delete_admin(admin_id)
-            msg = cnst.ADMIN_REMOVED
-            vk.send_message_keyboard(uid, msg, cnst.admin_menu_keyboard)
+            msg = cnst.MSG_ADMIN_REMOVED
+            vk.send_message_keyboard(uid, msg, cnst.KEYBOARD_ADMIN)
             IN_ADMIN_PANEL[uid] = ''
         except ValueError:
-            msg = cnst.VALUE_ERROR
+            msg = cnst.MSG_VALUE_ERROR
             vk.send_message(uid, msg)
-    elif IN_ADMIN_PANEL[uid] == cnst.ADD_ADMIN:
+
+    elif IN_ADMIN_PANEL[uid] == cnst.BTN_ADD_ADMIN:
         try:
             admin_id = int(text)
             name = vk.get_user_name(admin_id)
             db.add_bot_admin(admin_id, name)
-            vk.send_message_keyboard(uid, cnst.ADMIN_SUCCCES_ADDED, cnst.admin_menu_keyboard)
+            vk.send_message_keyboard(uid, cnst.MSG_ADMIN_SUCCCES_ADDED, cnst.KEYBOARD_ADMIN)
             IN_ADMIN_PANEL[uid] = ''
         except ValueError:
-            msg = cnst.VALUE_ERROR
+            msg = cnst.MSG_VALUE_ERROR
             vk.send_message(uid, msg)
     else:
-        vk.send_message(uid, cnst.DEFAULT_ANSWER)
+        vk.send_message(uid, cnst.MSG_DEFAULT_ANSWER)
 
 
 def message_processing(uid, text):
@@ -112,39 +120,39 @@ def message_processing(uid, text):
         return 'ok'
 
     if text.lower() in cnst.START_WORDS:
-        vk.send_message_keyboard(uid, cnst.WELCOME_TO_COURSE.format(uname), cnst.user_enroll_keyboard)
+        vk.send_message_keyboard(uid, cnst.MSG_WELCOME_TO_COURSE.format(uname), cnst.KEYBOARD_USER)
 
-    elif text == cnst.ENROLL or (text.lower() in cnst.USER_ACCEPT_WORDS and not_ready_to_enroll(uid)):
+    elif text == cnst.BTN_ENROLL or (text.lower() in cnst.USER_ACCEPT_WORDS and not_ready_to_enroll(uid)):
         READY_TO_ENROLL[uid] = m.Enroll_info(uid)
-        vk.send_message_keyboard(uid, cnst.ACCEPT_NAME, cnst.cancel_keyboard)
+        vk.send_message_keyboard(uid, cnst.MSG_ACCEPT_NAME, cnst.KEYBOARD_CANCEL)
 
-    elif text == cnst.CANCEL:
+    elif text == cnst.BTN_CANCEL:
         del_uid_from_dict(uid, READY_TO_ENROLL)
-        vk.send_message_keyboard(uid, cnst.CANCELED_MESSAGE, cnst.user_enroll_keyboard)
+        vk.send_message_keyboard(uid, cnst.MSG_CANCELED_MESSAGE, cnst.KEYBOARD_USER)
 
     # Обработка ввода данных пользователя
     elif uid in READY_TO_ENROLL:
         if not READY_TO_ENROLL[uid].name_is_sign():
             READY_TO_ENROLL[uid].set_name(text)
-            vk.send_message(uid, cnst.ACCEPT_EMAIL)
+            vk.send_message(uid, cnst.MSG_ACCEPT_EMAIL)
         elif not READY_TO_ENROLL[uid].email_is_sign():
             READY_TO_ENROLL[uid].set_email(text)
-            vk.send_message(uid, cnst.ACCEPT_NUMBER)
+            vk.send_message(uid, cnst.MSG_ACCEPT_NUMBER)
         elif not READY_TO_ENROLL[uid].number_is_sign():
             READY_TO_ENROLL[uid].set_number(text)
             send_message_admins(READY_TO_ENROLL[uid])
             del_uid_from_dict(uid, READY_TO_ENROLL)
-            vk.send_message_keyboard(uid, cnst.ENROLL_COMPLETED, cnst.user_enroll_keyboard)
+            vk.send_message_keyboard(uid, cnst.MSG_ENROLL_COMPLETED, cnst.KEYBOARD_USER)
 
     # Вход для админа
     elif text in cnst.ADMIN_KEY_WORDS and not_ready_to_enroll(uid):
         if db.is_admin(uid):
             IN_ADMIN_PANEL[uid] = ''
-            vk.send_message_keyboard(uid, cnst.admin_panel_text, cnst.admin_menu_keyboard)
+            vk.send_message_keyboard(uid, cnst.MSG_ADMIN_PANEL, cnst.KEYBOARD_ADMIN)
         else:
-            vk.send_message_keyboard(uid, cnst.YOU_NOT_ADMIN, cnst.user_enroll_keyboard)
+            vk.send_message_keyboard(uid, cnst.MSG_YOU_NOT_ADMIN, cnst.KEYBOARD_USER)
     else:
-        vk.send_message(uid, cnst.DEFAULT_ANSWER)
+        vk.send_message(uid, cnst.MSG_DEFAULT_ANSWER)
     return 'ok'
 
 

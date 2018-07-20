@@ -119,7 +119,8 @@ def send_message_much(user_ids, text):
         'access_token': config.token,
         'v': api_ver
     }
-    requests.post(config.vk_api_url + 'messages.send', data=data)
+    answ = requests.post(config.vk_api_url + 'messages.send', data=data)
+    print(answ)
 
 
 def get_messages_upload_server(peer_id):
