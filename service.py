@@ -59,6 +59,16 @@ def admin_message_processing(uid, uname, text):
         vk.send_message_keyboard(uid, msg, cnst.cancel_keyboard)
     elif text == cnst.ADD_ADMIN:
         pass
+    elif text.lower() == cnst.PARSE_GROUP:
+        if db.is_admin(uid):
+            members_count = get_group_count()
+            msg = cnst.MEMBERS_COUNT.format(members_count)
+            vk.send_message(uid, msg)
+            added_count = parse_group(members_count)
+            msg = cnst.ADDED_COUNT.format(added_count)
+            vk.send_message(uid, msg)
+        else:
+            vk.send_message_keyboard(uid, cnst.YOU_NOT_ADMIN, cnst.user_enroll_keyboard)
     elif text == cnst.CANCEL:
         IN_ADMIN_PANEL[uid] = ''
         vk.send_message_keyboard(uid, cnst.CANCELED_MESSAGE, cnst.admin_menu_keyboard)
@@ -81,7 +91,7 @@ def admin_message_processing(uid, uname, text):
 
 def message_processing(uid, text):
     uname = vk.get_user_name(uid)
-    if uid in IN_ADMIN_PANEL:
+    if True: #uid in IN_ADMIN_PANEL:
         admin_message_processing(uid, uname, text)
         return 'ok'
 
@@ -91,17 +101,6 @@ def message_processing(uid, text):
     elif text == cnst.ENROLL or (text.lower() in cnst.USER_ACCEPT_WORDS and not_ready_to_enroll(uid)):
         READY_TO_ENROLL[uid] = m.Enroll_info(uid)
         vk.send_message_keyboard(uid, cnst.ACCEPT_NAME, cnst.cancel_keyboard)
-
-    elif text.lower() == cnst.PARSE_GROUP:
-        if db.is_admin(uid):
-            members_count = get_group_count()
-            msg = cnst.MEMBERS_COUNT.format(members_count)
-            vk.send_message(uid, msg)
-            added_count = parse_group(members_count)
-            msg = cnst.ADDED_COUNT.format(added_count)
-            vk.send_message(uid, msg)
-        else:
-            vk.send_message_keyboard(uid, cnst.YOU_NOT_ADMIN, cnst.user_enroll_keyboard)
 
     elif text == cnst.CANCEL:
         del_uid_from_dict(uid, READY_TO_ENROLL)

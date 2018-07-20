@@ -64,7 +64,7 @@ def get_group_memebers(group_id, offset=0, count=1000):
     }
     res = requests.post(config.vk_api_url + 'groups.getMembers', data=data)
     try:
-        return json.loads(res.text)['response']['users']
+        return json.loads(res.text)['response']['items']
     except Exception:
         print(res.text)
         return []

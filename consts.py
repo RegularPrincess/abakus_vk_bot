@@ -23,8 +23,8 @@ ENROLL_COMPLETED = 'Мы всё записали и в ближайшее вре
 CANCELED_MESSAGE = 'Действие успешно отменено.'
 DEFAULT_ANSWER = 'Ничего не понятно('
 PLEASE_WAIT = 'Это может занять некоторое время...'
-MEMBERS_COUNT = 'В группе {0} пользователей'
-ADDED_COUNT = 'Добавлено {0} пользователей в базу'
+MEMBERS_COUNT = 'Пользователей в группе - {0}'
+ADDED_COUNT = 'Пользователей добавлено в базу - {0}'
 
 USER_LEAVE_STATUS = 'leave'
 USER_SUB_STATUS = 'member'
