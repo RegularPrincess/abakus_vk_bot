@@ -145,7 +145,7 @@ def message_processing(uid, text):
             vk.send_message_keyboard(uid, cnst.MSG_ENROLL_COMPLETED, cnst.KEYBOARD_USER)
 
     # Вход для админа
-    elif text in cnst.ADMIN_KEY_WORDS and not_ready_to_enroll(uid):
+    elif text.lower() in cnst.ADMIN_KEY_WORDS and not_ready_to_enroll(uid):
         if db.is_admin(uid):
             IN_ADMIN_PANEL[uid] = ''
             vk.send_message_keyboard(uid, cnst.MSG_ADMIN_PANEL, cnst.KEYBOARD_ADMIN)
