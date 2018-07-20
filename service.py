@@ -43,7 +43,7 @@ def admin_message_processing(uid, uname, text):
         vk.send_message_keyboard(uid, cnst.WELCOME_TO_COURSE.format(uname), cnst.user_enroll_keyboard)
     elif text == cnst.BROADCAST:
         IN_ADMIN_PANEL[uid] = cnst.BROADCAST
-        vk.send_message(uid, cnst.ACCEPT_BROADCAST)
+        vk.send_message_keyboard(uid, cnst.ACCEPT_BROADCAST, cnst.user_cancel_keyboard)
     elif text == cnst.SUBS:
         vk.send_message(uid, cnst.PLEASE_WAIT)
         vk_doc_link = make_subs_file(uid)
@@ -52,6 +52,9 @@ def admin_message_processing(uid, uname, text):
         pass
     elif text == cnst.ADD_ADMIN:
         pass
+    elif text == cnst.CANCEL:
+        IN_ADMIN_PANEL[uid] = ''
+        vk.send_message_keyboard(uid, cnst.CANCELED_MESSAGE, cnst.admin_menu_keyboard)
     elif IN_ADMIN_PANEL[uid] == cnst.BROADCAST:
         count = db.vk_emailing_to_all_subs(text)
         vk.send_message(uid, cnst.BROADCAST_COMPLETED.format(count))
@@ -114,10 +117,10 @@ def make_subs_file(uid):
         return 'ok'
     filename = 'subs.csv'
     out = open(filename, 'a')
-    text = 'ID; Имя; Статус; Подписан на рассылку'
+    text = 'ID; Имя; Статус; Подписан на рассылку\n'
     out.write(text)
     for x in bot_followers:
-        text = '{};{};{};{}'.format(x.uid, x.name, x.status, x.mess_allowed)
+        text = '{};{};{};{}\n'.format(x.uid, x.name, x.status, x.mess_allowed)
         out.write(text)
     out.close()
     res = vk.get_doc_upload_server1(uid)

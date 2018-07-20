@@ -173,7 +173,7 @@ def get_doc_upload_server1(peer_id):
     data = {
         'peer_id': peer_id,
         'access_token': config.token,
-        'v': api_ver
+        'v': '5.78'
     }
     res = requests.post(config.vk_api_url + 'docs.getMessagesUploadServer', data=data)
     return res.json()
