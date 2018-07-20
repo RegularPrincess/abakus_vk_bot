@@ -95,7 +95,7 @@ def admin_message_processing(uid, uname, text):
         try:
             admin_id = int(text)
             name = vk.get_user_name(admin_id)
-            db.add_bot_admin(uid, name)
+            db.add_bot_admin(admin_id, name)
             vk.send_message_keyboard(uid, cnst.ADMIN_SUCCCES_ADDED, cnst.admin_menu_keyboard)
             IN_ADMIN_PANEL[uid] = ''
         except ValueError:
