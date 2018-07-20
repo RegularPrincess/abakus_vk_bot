@@ -52,7 +52,7 @@ def admin_message_processing(uid, uname, text):
         pass
     elif text == cnst.ADD_ADMIN:
         pass
-    elif True: #IN_ADMIN_PANEL[uid] == cnst.BROADCAST:
+    elif IN_ADMIN_PANEL[uid] == cnst.BROADCAST:
         count = db.vk_emailing_to_all_subs(text)
         vk.send_message(uid, cnst.BROADCAST_COMPLETED.format(count))
         IN_ADMIN_PANEL[uid] = ''
@@ -62,7 +62,7 @@ def admin_message_processing(uid, uname, text):
 
 def message_processing(uid, text):
     uname = vk.get_user_name(uid)
-    if True: #uid in IN_ADMIN_PANEL:
+    if uid in IN_ADMIN_PANEL:
         admin_message_processing(uid, uname, text)
         return 'ok'
 
