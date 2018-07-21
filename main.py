@@ -7,6 +7,7 @@ from flask import json
 
 import service as s
 import config
+import multithread_utils
 
 token = config.token
 confirmation_token = config.confirmation_token
@@ -54,7 +55,9 @@ def processing():
 
 def main(argv):
     #port = int(argv[0])
-    app.run(host='0.0.0.0', port=8088, debug=True)
+    updater = multithread_utils.Thread_allow_updater()
+    updater.start()
+    app.run(host='0.0.0.0', port=8088, debug=False)
 
 if __name__ == '__main__':
     import sys

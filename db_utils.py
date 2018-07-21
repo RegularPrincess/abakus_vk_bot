@@ -38,6 +38,7 @@ def update_mess_allowed_info():
             set_bot_follower_mess_allowed(uid, 1)
         else:
             set_bot_follower_mess_allowed(uid, 0)
+    print("Updated")
 
 
 def vk_emailing_to_all_subs(text):
