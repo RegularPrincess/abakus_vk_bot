@@ -163,3 +163,17 @@ def get_bot_followers(only_id=False):
             arr.append(item)
         connection.commit()
     return arr
+
+
+def get_msg_allowed_count():
+    """
+    Количество разрешивших себе писать
+    """
+    with sqlite3.connect(config.db_name) as connection:
+        cursor = connection.cursor()
+        sql = '''SELECT count(*) FROM known_users ku WHERE mess_allowed == 1 AND NOT status = ?'''
+        cursor.execute(sql, (cnst.USER_LEAVE_STATUS, ))
+        res = cursor.fetchone()
+        count = int(res[0])
+        connection.commit()
+        return count

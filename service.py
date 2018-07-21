@@ -23,6 +23,9 @@ def admin_message_processing(uid, uname, text):
 
     elif text == cnst.BTN_BROADCAST:
         IN_ADMIN_PANEL[uid] = cnst.BTN_BROADCAST
+        all_count = vk.get_count_group_followers(cfg.group_id)
+        msg_allowed_count = db.get_msg_allowed_count()
+        vk.send_message(uid, cnst.MSG_USER_SHORT_INFO.format(all_count, msg_allowed_count))
         vk.send_message_keyboard(uid, cnst.MSG_ACCEPT_BROADCAST, cnst.KEYBOARD_CANCEL)
 
     elif text == cnst.BTN_SUBS:
@@ -196,7 +199,6 @@ def parse_group(members_count, group_id=cfg.group_id):
             except Exception as e:
                 pass
     return users_added
-
 
 
 def group_join(uid):
