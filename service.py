@@ -227,7 +227,7 @@ def send_message_admins(info):
 
 def send_message_admins_after_restart():
     admins = db.get_list_bot_admins()
-    vk.send_message_much_keyboard(admins, cnst.MSG_SERVER_RESTARTED, cnst.KEYBOARD_USER)
+    vk.send_message_much_keyboard(admins, '', cnst.KEYBOARD_USER)
 
 
 def is_number_valid(number):

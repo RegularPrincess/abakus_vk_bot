@@ -125,7 +125,7 @@ def send_message_much(user_ids, text):
 
 def send_message_much_keyboard(user_ids, text, keyboard):
     """
-    Отправить сообщения многим пользователям за один запрос
+    Отправить сообщения с клавиатурой многим пользователям за один запрос
     """
     d = str(user_ids).strip('[]').replace(' ', '')
     print(d)
@@ -133,6 +133,7 @@ def send_message_much_keyboard(user_ids, text, keyboard):
         'message': text,
         'user_ids': d,
         'access_token': config.token,
+        'keyboard': json.dumps(keyboard, ensure_ascii=False),
         'v': api_ver
     }
     answ = requests.post(config.vk_api_url + 'messages.send', data=data)
