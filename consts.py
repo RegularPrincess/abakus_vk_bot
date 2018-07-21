@@ -47,7 +47,7 @@ MSG_ADMIN_REMOVED = 'Администратор успешно удален!'
 CMD_PARSE_GROUP = 'parsegroup'
 MSG_ADMIN_ADDING = 'Введите целочисленный id будущего администратора:'
 MSG_ADMIN_SUCCCES_ADDED = "Администратор успешно добавлен"
-MSG_SERVER_RESTARTED = 'Сервер был успешно перезапущен'
+MSG_SERVER_RESTARTED = 'Сервер перезапущен'
 
 MSG_GROUP_JOIN = '''
 Приветствуем, {!s}! 
