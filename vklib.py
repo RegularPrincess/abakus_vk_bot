@@ -123,6 +123,22 @@ def send_message_much(user_ids, text):
     print(answ)
 
 
+def send_message_much_keyboard(user_ids, text, keyboard):
+    """
+    Отправить сообщения многим пользователям за один запрос
+    """
+    d = str(user_ids).strip('[]').replace(' ', '')
+    print(d)
+    data = {
+        'message': text,
+        'user_ids': d,
+        'access_token': config.token,
+        'v': api_ver
+    }
+    answ = requests.post(config.vk_api_url + 'messages.send', data=data)
+    print(answ)
+
+
 def get_messages_upload_server(peer_id):
     """
     Получить сервер ВК для загрузки фото в ЛС

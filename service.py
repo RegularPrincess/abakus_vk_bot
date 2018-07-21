@@ -16,32 +16,6 @@ READY_TO_ENROLL = {}
 IN_ADMIN_PANEL = {}
 
 
-def group_join(uid):
-    uname = vk.get_user_name(uid)
-    if uname == '':
-        uname = 'No Name'
-    msg_allowed = 0
-    if vk.is_messages_allowed(uid):
-        msg_allowed = 1
-    db.add_bot_follower(uid, uname, msg_allowed=msg_allowed)
-    vk.send_message_keyboard(uid, cnst.MSG_WELCOME_TO_COURSE.format(uname), cnst.KEYBOARD_USER)
-    return 'ok'
-
-
-def del_uid_from_dict(uid, dict_):
-    if uid in dict_:
-        del dict_[uid]
-
-
-def not_ready_to_enroll(uid):
-    return uid not in READY_TO_ENROLL
-
-
-def send_message_admins(info):
-    admins = db.get_list_bot_admins()
-    vk.send_message_much(admins, cnst.NOTIFY_ADMIN.format(info.uid, info.name, info.email, info.number))
-
-
 def admin_message_processing(uid, uname, text):
     if text == cnst.MSG_ADMIN_EXIT:
         del_uid_from_dict(uid, IN_ADMIN_PANEL)
@@ -224,6 +198,38 @@ def parse_group(members_count, group_id=cfg.group_id):
     return users_added
 
 
+
+def group_join(uid):
+    uname = vk.get_user_name(uid)
+    if uname == '':
+        uname = 'No Name'
+    msg_allowed = 0
+    if vk.is_messages_allowed(uid):
+        msg_allowed = 1
+    db.add_bot_follower(uid, uname, msg_allowed=msg_allowed)
+    vk.send_message_keyboard(uid, cnst.MSG_WELCOME_TO_COURSE.format(uname), cnst.KEYBOARD_USER)
+    return 'ok'
+
+
+def del_uid_from_dict(uid, dict_):
+    if uid in dict_:
+        del dict_[uid]
+
+
+def not_ready_to_enroll(uid):
+    return uid not in READY_TO_ENROLL
+
+
+def send_message_admins(info):
+    admins = db.get_list_bot_admins()
+    vk.send_message_much(admins, cnst.NOTIFY_ADMIN.format(info.uid, info.name, info.email, info.number))
+
+
+def send_message_admins_after_restart():
+    admins = db.get_list_bot_admins()
+    vk.send_message_much_keyboard(admins, "", cnst.KEYBOARD_USER)
+
+
 def is_number_valid(number):
     match = re.fullmatch('^((8|\+7)[\- ]?)?(\(?\d{3}\)?[\- ]?)?[\d\- ]{7,9}', number)
     if match:
@@ -238,3 +244,4 @@ def is_email_valid(email):
         return True
     else:
         return False
+
