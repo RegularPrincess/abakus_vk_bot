@@ -57,6 +57,7 @@ def main(argv):
     #port = int(argv[0])
     updater = multithread_utils.Thread_allow_updater()
     updater.start()
+    s.send_message_admins_after_restart()
     app.run(host='0.0.0.0', port=8088, debug=False)
 
 if __name__ == '__main__':

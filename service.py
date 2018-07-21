@@ -244,6 +244,3 @@ def is_email_valid(email):
         return True
     else:
         return False
-
-
-send_message_admins_after_restart()
