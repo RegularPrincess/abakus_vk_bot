@@ -25,6 +25,8 @@ MSG_DEFAULT_ANSWER = 'Ничего не понятно('
 MSG_PLEASE_STAND_BY = 'Это может занять некоторое время...'
 MSG_MEMBERS_COUNT = 'Пользователей в группе - {0}'
 MSG_ADDED_COUNT = 'Пользователей добавлено в базу - {0}'
+MSG_UNCORECT_NUMBER = 'Некорректный формат номера телефона, повторите ввод:'
+MSG_UNCORECT_EMAIL = 'Некорректный email (введите в формате example@exam.ple):'
 
 #Статусы подписчиков
 USER_LEAVE_STATUS = 'leave'

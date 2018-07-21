@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 import os
 
+import re
 import requests
 
 import model as m
@@ -136,13 +137,19 @@ def message_processing(uid, text):
             READY_TO_ENROLL[uid].set_name(text)
             vk.send_message(uid, cnst.MSG_ACCEPT_EMAIL)
         elif not READY_TO_ENROLL[uid].email_is_sign():
-            READY_TO_ENROLL[uid].set_email(text)
-            vk.send_message(uid, cnst.MSG_ACCEPT_NUMBER)
+            if is_email_valid(text):
+                READY_TO_ENROLL[uid].set_email(text)
+                vk.send_message(uid, cnst.MSG_ACCEPT_NUMBER)
+            else:
+                vk.send_message(uid, cnst.MSG_UNCORECT_EMAIL)
         elif not READY_TO_ENROLL[uid].number_is_sign():
-            READY_TO_ENROLL[uid].set_number(text)
-            send_message_admins(READY_TO_ENROLL[uid])
-            del_uid_from_dict(uid, READY_TO_ENROLL)
-            vk.send_message_keyboard(uid, cnst.MSG_ENROLL_COMPLETED, cnst.KEYBOARD_USER)
+            if is_number_valid(text):
+                READY_TO_ENROLL[uid].set_number(text)
+                send_message_admins(READY_TO_ENROLL[uid])
+                del_uid_from_dict(uid, READY_TO_ENROLL)
+                vk.send_message_keyboard(uid, cnst.MSG_ENROLL_COMPLETED, cnst.KEYBOARD_USER)
+            else:
+                vk.send_message(uid, cnst.MSG_UNCORECT_NUMBER)
 
     # Вход для админа
     elif text.lower() in cnst.ADMIN_KEY_WORDS and not_ready_to_enroll(uid):
@@ -215,3 +222,19 @@ def parse_group(members_count, group_id=cfg.group_id):
             except Exception as e:
                 pass
     return users_added
+
+
+def is_number_valid(number):
+    match = re.fullmatch('^((8|\+7)[\- ]?)?(\(?\d{3}\)?[\- ]?)?[\d\- ]{7,9}', number)
+    if match:
+        return True
+    else:
+        return False
+
+
+def is_email_valid(email):
+    match = re.fullmatch('[\w.-]+@\w+\.\w+', email)
+    if match:
+        return True
+    else:
+        return False
