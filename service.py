@@ -245,3 +245,5 @@ def is_email_valid(email):
     else:
         return False
 
+
+send_message_admins_after_restart()
