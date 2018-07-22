@@ -54,11 +54,11 @@ def processing():
 
 
 def main(argv):
-    #port = int(argv[0])
+    port = int(argv[1])
     updater = multithread_utils.Thread_allow_updater()
     updater.start()
     s.send_message_admins_after_restart()
-    app.run(host='0.0.0.0', port=8088, debug=False)
+    app.run(host='0.0.0.0', port=port, debug=False)
 
 if __name__ == '__main__':
     import sys

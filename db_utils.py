@@ -143,8 +143,11 @@ def add_bot_follower(uid, name, status=cnst.USER_SUB_STATUS, msg_allowed=0):
     """
     with sqlite3.connect(config.db_name) as connection:
         cursor = connection.cursor()
-        sql = '''INSERT OR IGNORE INTO known_users (uid, status, name, mess_allowed) VALUES (?, ?, ?, ?)'''
-        cursor.execute(sql, (uid, status, name, msg_allowed))
+        if follower_is_leave(uid):
+            set_bot_follower_status(uid, cnst.USER_RETURN_STATUS)
+        else:
+            sql = '''INSERT OR IGNORE INTO known_users (uid, status, name, mess_allowed) VALUES (?, ?, ?, ?)'''
+            cursor.execute(sql, (uid, status, name, msg_allowed))
         connection.commit()
 
 
@@ -163,6 +166,17 @@ def get_bot_followers(only_id=False):
             arr.append(item)
         connection.commit()
     return arr
+
+
+def follower_is_leave(uid):
+    with sqlite3.connect(config.db_name) as connection:
+        cursor = connection.cursor()
+        sql = '''SELECT count(*) FROM known_users ku WHERE uid == ? AND status = ?'''
+        cursor.execute(sql, (uid, cnst.USER_LEAVE_STATUS))
+        res = cursor.fetchone()
+        count = int(res[0])
+        connection.commit()
+        return count != 0
 
 
 def get_msg_allowed_count():

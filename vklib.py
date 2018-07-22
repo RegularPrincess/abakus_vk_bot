@@ -24,6 +24,7 @@ def is_messages_allowed(uid, group_id=config.group_id):
         print(res.text)
         return False
 
+
 def send_message(user_id, text):
     """
     Send VK message

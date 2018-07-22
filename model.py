@@ -1,6 +1,8 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
+import consts as cnst
+
 class Admin:
     def __init__(self, uid, name, status='member'):
         self.uid = uid
@@ -17,10 +19,10 @@ class Follower:
         self.mess_allowed = mess_allowed
 
     def is_msging_allowed(self):
-        return self.mess_allowed == 1
+        return self.mess_allowed == 1 and not self.status == cnst.USER_LEAVE_STATUS
 
 
-class Enroll_info:
+class EnrollInfo:
     def __init__(self, uid):
         self.uid = uid
         self.name = None
