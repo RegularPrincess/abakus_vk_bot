@@ -31,7 +31,7 @@ def admin_message_processing(uid, uname, text):
     elif text == cnst.BTN_SUBS:
         vk.send_message(uid, cnst.MSG_PLEASE_STAND_BY)
         vk_doc_link = make_subs_file(uid)
-        vk.send_message_doc(uid, '', vk_doc_link)
+        vk.send_message_doc(uid, cnst.MSG_SUBS, vk_doc_link)
 
     elif text == cnst.BTN_ADMINS:
         IN_ADMIN_PANEL[uid] = cnst.BTN_ADMINS
