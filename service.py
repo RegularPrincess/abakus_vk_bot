@@ -36,9 +36,9 @@ def admin_message_processing(uid, uname, text):
     elif text == cnst.BTN_ADMINS:
         IN_ADMIN_PANEL[uid] = cnst.BTN_ADMINS
         admins = db.get_bot_admins()
-        msg = 'Администраторы: \n\n'
+        msg = cnst.MSG_ADMINS
         for a in admins:
-            msg += '{}, id - {}\n\n'.format(a.name, a.uid)
+            msg += '🔑 {}, id - {}\n\n'.format(a.name, a.uid)
         msg += cnst.MSG_ADMIN_REMOVING
         vk.send_message_keyboard(uid, msg, cnst.KEYBOARD_CANCEL)
 
@@ -88,7 +88,8 @@ def admin_message_processing(uid, uname, text):
             msg = cnst.MSG_VALUE_ERROR
             vk.send_message(uid, msg)
     else:
-        vk.send_message(uid, cnst.MSG_DEFAULT_ANSWER)
+        pass
+        # vk.send_message(uid, cnst.MSG_DEFAULT_ANSWER)
 
 
 def message_processing(uid, text):
@@ -122,9 +123,9 @@ def message_processing(uid, text):
         elif not READY_TO_ENROLL[uid].number_is_sign():
             if is_number_valid(text):
                 READY_TO_ENROLL[uid].set_number(text)
+                vk.send_message_keyboard(uid, cnst.MSG_ENROLL_COMPLETED.format(READY_TO_ENROLL[uid].name), cnst.KEYBOARD_USER)
                 send_message_admins(READY_TO_ENROLL[uid])
                 del_uid_from_dict(uid, READY_TO_ENROLL)
-                vk.send_message_keyboard(uid, cnst.MSG_ENROLL_COMPLETED, cnst.KEYBOARD_USER)
             else:
                 vk.send_message(uid, cnst.MSG_UNCORECT_NUMBER)
 
@@ -136,7 +137,8 @@ def message_processing(uid, text):
         else:
             vk.send_message_keyboard(uid, cnst.MSG_YOU_NOT_ADMIN, cnst.KEYBOARD_USER)
     else:
-        vk.send_message(uid, cnst.MSG_DEFAULT_ANSWER)
+        pass
+        # vk.send_message(uid, cnst.MSG_DEFAULT_ANSWER)
     return 'ok'
 
 
