@@ -144,8 +144,10 @@ def message_processing(uid, text):
 
 def group_leave(uid):
     uname = vk.get_user_name(uid)
-    db.set_bot_follower_status(uid, cnst.USER_LEAVE_STATUS)
     vk.send_message_keyboard(uid, cnst.GROUP_LEAVE_MESSAGE.format(uname), cnst.EMPTY_KEYBOARD)
+    db.set_bot_follower_status(uid, cnst.USER_LEAVE_STATUS)
+    del_uid_from_dict(uid, IN_ADMIN_PANEL)
+    del_uid_from_dict(uid, READY_TO_ENROLL)
     return 'ok'
 
 
