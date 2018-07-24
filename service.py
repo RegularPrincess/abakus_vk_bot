@@ -214,6 +214,8 @@ def group_join(uid):
         msg_allowed = 1
     db.add_bot_follower(uid, uname, msg_allowed=msg_allowed)
     vk.send_message_keyboard(uid, cnst.MSG_WELCOME_TO_COURSE.format(uname), cnst.KEYBOARD_USER)
+    del_uid_from_dict(uid, IN_ADMIN_PANEL)
+    del_uid_from_dict(uid, READY_TO_ENROLL)
     return 'ok'
 
 
