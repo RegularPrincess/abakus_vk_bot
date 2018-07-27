@@ -7,7 +7,7 @@ from flask import request
 
 import config
 import service as s
-from utils import multithread_utils
+
 
 token = config.token
 confirmation_token = config.confirmation_token
@@ -51,12 +51,18 @@ def processing():
         uid = data['object']['user_id']
         answer = s.group_leave(uid)
         return answer
+    elif data['type'] == 'message_allow':
+        uid = data['object']['user_id']
+        answer = s.message_allow(uid)
+        return answer
+    elif data['type'] == 'message_deny':
+        uid = data['object']['user_id']
+        answer = s.message_deny(uid)
+        return answer
 
 
 def main(argv):
     port = int(argv[1])
-    updater = multithread_utils.Thread_allow_updater()
-    updater.start()
     app.run(host='0.0.0.0', port=port, debug=False)
 
 if __name__ == '__main__':

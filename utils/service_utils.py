@@ -9,7 +9,6 @@ import config as cfg
 
 
 def make_subs_file(uid):
-    db.update_mess_allowed_info()
     bot_followers = db.get_bot_followers()
     if len(bot_followers) == 0:
         text = 'В боте ещё нет подписчиков'

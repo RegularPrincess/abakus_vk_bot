@@ -32,16 +32,6 @@ with sqlite3.connect(config.db_name) as connection:
     connection.commit()
 
 
-def update_mess_allowed_info():
-    uids = get_bot_followers(only_id=True)
-    for uid in uids:
-        if vklib.is_messages_allowed(uid):
-            set_bot_follower_mess_allowed(uid, 1)
-        else:
-            set_bot_follower_mess_allowed(uid, 0)
-    print("Updated")
-
-
 def vk_emailing_to_all_subs(text):
     """
     Разослать текст всем подписчикам, кому возможно группы
