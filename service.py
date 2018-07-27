@@ -107,7 +107,6 @@ def message_processing(uid, text):
     elif text == cnst.BTN_ENROLL or (text.lower() in cnst.USER_ACCEPT_WORDS and not_ready_to_enroll(uid)):
         READY_TO_ENROLL[uid] = m.EnrollInfo(uid)
         vk.send_message_keyboard(uid, cnst.MSG_ACCEPT_NAME, cnst.KEYBOARD_CANCEL)
-        utils.new_user_or_not(uid, uname)
 
     elif text == cnst.BTN_CANCEL:
         utils.del_uid_from_dict(uid, READY_TO_ENROLL)
