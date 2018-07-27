@@ -1,8 +1,7 @@
+import time
 from threading import Thread
 
-import time
-
-import db_utils as db
+from utils import db_utils as db
 
 
 class Thread_allow_updater(Thread):

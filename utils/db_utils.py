@@ -3,11 +3,10 @@
 
 from sqlite3 import dbapi2 as sqlite3
 
-import vklib
 import config
-import model as m
 import consts as cnst
-
+import model as m
+from utils import vklib
 
 with sqlite3.connect(config.db_name) as connection:
     cursor = connection.cursor()
@@ -23,6 +22,8 @@ with sqlite3.connect(config.db_name) as connection:
         id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
         uid INTEGER UNIQUE NOT NULL,
         name TEXT NOT NULL)'''
+    cursor.execute(sql)
+    sql = '''CREATE INDEX IF NOT EXISTS uid_known_users ON known_users (uid)'''
     cursor.execute(sql)
     # Add base admins to bot
     sql = '''INSERT OR IGNORE INTO admins (uid, name) VALUES ({!s}, '{!s}')'''.format(
@@ -128,7 +129,7 @@ def set_bot_follower_status(uid, status):
 
 def set_bot_follower_mess_allowed(uid, status):
     """
-    status = 0 or 1
+    status = 0(not allow) or 1(allow)
     """
     with sqlite3.connect(config.db_name) as connection:
         cursor = connection.cursor()
@@ -191,3 +192,14 @@ def get_msg_allowed_count():
         count = int(res[0])
         connection.commit()
         return count
+
+
+def is_known_user(uid):
+    """
+    Есть ли пользователь в базе
+    """
+    with sqlite3.connect(config.db_name) as connection:
+        cursor = connection.cursor()
+        sql = '''SELECT * FROM known_users WHERE uid = ? '''
+        res = cursor.execute(sql, (uid, )).fetchall()
+        return len(res) > 0

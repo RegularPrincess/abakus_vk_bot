@@ -36,6 +36,7 @@ MSG_SUBS = '🔥 ПОДПИСЧИКИ БОТА 🔥'
 USER_LEAVE_STATUS = 'leave'
 USER_SUB_STATUS = 'member'
 USER_RETURN_STATUS = 'return'
+USER_NOT_SUB_STATUS = 'notmember'
 
 #Сообщения для администраторов
 NOTIFY_ADMIN = 'Пользователь с id{} записался на бесплатное занятие. \n\n' \

@@ -1,24 +1,26 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 import os
-
 import re
+
 import requests
+import utils.vklib as vk
 
-import model as m
-import consts as cnst
-import vklib as vk
-import db_utils as db
 import config as cfg
-
+import consts as cnst
+import model as m
+from utils import db_utils as db
+from utils import service_utils as utils
 
 READY_TO_ENROLL = {}
 IN_ADMIN_PANEL = {}
 
+utils.send_message_admins_after_restart()
+
 
 def admin_message_processing(uid, uname, text):
     if text == cnst.MSG_ADMIN_EXIT:
-        del_uid_from_dict(uid, IN_ADMIN_PANEL)
+        utils.del_uid_from_dict(uid, IN_ADMIN_PANEL)
         vk.send_message_keyboard(uid, cnst.MSG_WELCOME_TO_COURSE.format(uname), cnst.KEYBOARD_USER)
 
     elif text == cnst.BTN_BROADCAST:
@@ -30,7 +32,7 @@ def admin_message_processing(uid, uname, text):
 
     elif text == cnst.BTN_SUBS:
         vk.send_message(uid, cnst.MSG_PLEASE_STAND_BY)
-        vk_doc_link = make_subs_file(uid)
+        vk_doc_link = utils.make_subs_file(uid)
         vk.send_message_doc(uid, cnst.MSG_SUBS, vk_doc_link)
 
     elif text == cnst.BTN_ADMINS:
@@ -48,11 +50,11 @@ def admin_message_processing(uid, uname, text):
 
     elif text.lower() == cnst.CMD_PARSE_GROUP:
         if db.is_admin(uid):
-            members_count = get_group_count()
+            members_count = utils.get_group_count()
             msg = cnst.MSG_MEMBERS_COUNT.format(members_count)
             vk.send_message(uid, msg)
             vk.send_message(uid, cnst.MSG_PLEASE_STAND_BY)
-            added_count = parse_group(members_count)
+            added_count = utils.parse_group(members_count)
             msg = cnst.MSG_ADDED_COUNT.format(added_count)
             vk.send_message(uid, msg)
         else:
@@ -100,13 +102,15 @@ def message_processing(uid, text):
 
     if text.lower() in cnst.START_WORDS:
         vk.send_message_keyboard(uid, cnst.MSG_WELCOME_TO_COURSE.format(uname), cnst.KEYBOARD_USER)
+        utils.new_user_or_not(uid, uname)
 
     elif text == cnst.BTN_ENROLL or (text.lower() in cnst.USER_ACCEPT_WORDS and not_ready_to_enroll(uid)):
         READY_TO_ENROLL[uid] = m.EnrollInfo(uid)
         vk.send_message_keyboard(uid, cnst.MSG_ACCEPT_NAME, cnst.KEYBOARD_CANCEL)
+        utils.new_user_or_not(uid, uname)
 
     elif text == cnst.BTN_CANCEL:
-        del_uid_from_dict(uid, READY_TO_ENROLL)
+        utils.del_uid_from_dict(uid, READY_TO_ENROLL)
         vk.send_message_keyboard(uid, cnst.MSG_CANCELED_MESSAGE, cnst.KEYBOARD_USER)
 
     # Обработка ввода данных пользователя
@@ -115,17 +119,17 @@ def message_processing(uid, text):
             READY_TO_ENROLL[uid].set_name(text)
             vk.send_message(uid, cnst.MSG_ACCEPT_EMAIL)
         elif not READY_TO_ENROLL[uid].email_is_sign():
-            if is_email_valid(text):
+            if utils.is_email_valid(text):
                 READY_TO_ENROLL[uid].set_email(text)
                 vk.send_message(uid, cnst.MSG_ACCEPT_NUMBER)
             else:
                 vk.send_message(uid, cnst.MSG_UNCORECT_EMAIL)
         elif not READY_TO_ENROLL[uid].number_is_sign():
-            if is_number_valid(text):
+            if utils.is_number_valid(text):
                 READY_TO_ENROLL[uid].set_number(text)
                 vk.send_message_keyboard(uid, cnst.MSG_ENROLL_COMPLETED.format(READY_TO_ENROLL[uid].name), cnst.KEYBOARD_USER)
-                send_message_admins(READY_TO_ENROLL[uid])
-                del_uid_from_dict(uid, READY_TO_ENROLL)
+                utils.send_message_admins(READY_TO_ENROLL[uid])
+                utils.del_uid_from_dict(uid, READY_TO_ENROLL)
             else:
                 vk.send_message(uid, cnst.MSG_UNCORECT_NUMBER)
 
@@ -137,72 +141,22 @@ def message_processing(uid, text):
         else:
             vk.send_message_keyboard(uid, cnst.MSG_YOU_NOT_ADMIN, cnst.KEYBOARD_USER)
     else:
-        pass
+        utils.new_user_or_not(uid, uname)
         # vk.send_message(uid, cnst.MSG_DEFAULT_ANSWER)
     return 'ok'
+
+
+def not_ready_to_enroll(uid):
+    return uid not in READY_TO_ENROLL
 
 
 def group_leave(uid):
     uname = vk.get_user_name(uid)
     vk.send_message_keyboard(uid, cnst.GROUP_LEAVE_MESSAGE.format(uname), cnst.EMPTY_KEYBOARD)
     db.set_bot_follower_status(uid, cnst.USER_LEAVE_STATUS)
-    del_uid_from_dict(uid, IN_ADMIN_PANEL)
-    del_uid_from_dict(uid, READY_TO_ENROLL)
+    utils.del_uid_from_dict(uid, IN_ADMIN_PANEL)
+    utils.del_uid_from_dict(uid, READY_TO_ENROLL)
     return 'ok'
-
-
-def make_subs_file(uid):
-    db.update_mess_allowed_info()
-    bot_followers = db.get_bot_followers()
-    if len(bot_followers) == 0:
-        text = 'В боте ещё нет подписчиков'
-        vk.send_message(uid, text)
-        return 'ok'
-    filename = 'subs.csv'
-    out = open(filename, 'a')
-    text = 'ID; Имя; Статус; Подписан на рассылку\n'
-    out.write(text)
-    for x in bot_followers:
-        text = '{};{};{};{}\n'.format(x.uid, x.name, x.status, x.mess_allowed)
-        out.write(text)
-    out.close()
-    res = vk.get_doc_upload_server1(uid)
-    print(res)
-    upload_url = res['response']['upload_url']
-    files = {'file': open(filename, 'r')}
-    response = requests.post(upload_url, files=files)
-    result = response.json()
-    print(result)
-    r = vk.save_doc(result['file'])
-    vk_doc_link = 'doc{!s}_{!s}'.format(r['response'][0]['owner_id'], r['response'][0]['id'])
-    print(vk_doc_link)
-    os.remove(filename)
-    return vk_doc_link
-
-
-def get_group_count(group_id=cfg.group_id):
-    members_count = vk.get_count_group_followers(group_id)
-    return int(members_count)
-
-
-def parse_group(members_count, group_id=cfg.group_id):
-    follower_list = db.get_bot_followers(only_id=True)
-    iterations = members_count // 1000 + 1
-    users_added = 0
-    for x in range(iterations):
-        users = vk.get_group_memebers(group_id, offset=x * 1000, count=1000)
-        for user_id in users:
-            try:
-                if not user_id in follower_list:
-                    username = vk.get_user_name(user_id)
-                    msg_allowed = 0
-                    if vk.is_messages_allowed(user_id):
-                        msg_allowed = 1
-                    db.add_bot_follower(user_id, username, msg_allowed=msg_allowed)
-                    users_added += 1
-            except Exception as e:
-                pass
-    return users_added
 
 
 def group_join(uid):
@@ -212,43 +166,12 @@ def group_join(uid):
     msg_allowed = 0
     if vk.is_messages_allowed(uid):
         msg_allowed = 1
-    db.add_bot_follower(uid, uname, msg_allowed=msg_allowed)
+    if db.is_known_user(uid):
+        db.set_bot_follower_status(uid, cnst.USER_SUB_STATUS)
+    else:
+        db.add_bot_follower(uid, uname,  msg_allowed=msg_allowed)
     vk.send_message_keyboard(uid, cnst.MSG_WELCOME_TO_COURSE.format(uname), cnst.KEYBOARD_USER)
-    del_uid_from_dict(uid, IN_ADMIN_PANEL)
-    del_uid_from_dict(uid, READY_TO_ENROLL)
+    utils.del_uid_from_dict(uid, IN_ADMIN_PANEL)
+    utils.del_uid_from_dict(uid, READY_TO_ENROLL)
     return 'ok'
 
-
-def del_uid_from_dict(uid, dict_):
-    if uid in dict_:
-        del dict_[uid]
-
-
-def not_ready_to_enroll(uid):
-    return uid not in READY_TO_ENROLL
-
-
-def send_message_admins(info):
-    admins = db.get_list_bot_admins()
-    vk.send_message_much(admins, cnst.NOTIFY_ADMIN.format(info.uid, info.name, info.email, info.number))
-
-
-def send_message_admins_after_restart():
-    admins = db.get_list_bot_admins()
-    vk.send_message_much_keyboard(admins, cnst.MSG_SERVER_RESTARTED, cnst.KEYBOARD_USER)
-
-
-def is_number_valid(number):
-    match = re.fullmatch('^((8|\+7)[\- ]?)?(\(?\d{3}\)?[\- ]?)?[\d\- ]{7,9}', number)
-    if match:
-        return True
-    else:
-        return False
-
-
-def is_email_valid(email):
-    match = re.fullmatch('[\w.-]+@\w+\.\w+', email)
-    if match:
-        return True
-    else:
-        return False
