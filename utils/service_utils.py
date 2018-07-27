@@ -93,7 +93,11 @@ def is_email_valid(email):
 
 
 def new_user_or_not(uid, uname):
-    if db.is_known_user(uid) or db.is_admin(uid):
-        return
+    e = db.is_known_user(uid)
+    if e or db.is_admin(uid):
+        if e:
+            db.set_bot_follower_mess_allowed(uid, 1)
     else:
         db.add_bot_follower(uid, uname, status=cnst.USER_NOT_SUB_STATUS, msg_allowed=1)
+        vk.send_message_keyboard(uid, cnst.MSG_WELCOME_TO_COURSE.format(uname), cnst.KEYBOARD_USER)
+

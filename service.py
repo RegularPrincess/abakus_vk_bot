@@ -179,7 +179,6 @@ def group_join(uid):
 def message_allow(uid):
     db.set_bot_follower_mess_allowed(uid, 1)
     uname = vk.get_user_name(uid)
-    vk.send_message_keyboard(uid, cnst.MSG_WELCOME_TO_COURSE.format(uname), cnst.KEYBOARD_USER)
     utils.new_user_or_not(uid, uname)
     return 'ok'
 
