@@ -51,8 +51,8 @@ def admin_message_processing(uid, uname, text):
     elif text == cnst.BTN_ADD_BROADCAST_BY_TIME:
         IN_ADMIN_PANEL[uid] = m.BcstByTime()
         vk.send_message_keyboard(uid, "Введите дату с которого следует начать рассылку, "
-                                      "затем время рассылки(мск),"
-                                      "затем количество дней через которое можем повторить\n"
+                                      "затем время рассылки(мск), "
+                                      "затем количество дней через которое можем повторить.\n"
                                       "Пример: 22.08.2018 15:22 3", cnst.KEYBOARD_CANCEL)
 
     elif text == cnst.BTN_BROADCAST_BY_TIME:

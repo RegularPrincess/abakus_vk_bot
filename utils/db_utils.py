@@ -213,7 +213,7 @@ def get_bcsts_by_time():
         res = cursor.execute(sql).fetchall()
         print(res)
         for x in res:
-            item = m.BcstByTime(x[1], x[3], x[2], x[4], x[0])
+            item = m.BcstByTime(x[1], x[2], x[3], x[4], x[0])
             arr.append(item)
         connection.commit()
     return arr
