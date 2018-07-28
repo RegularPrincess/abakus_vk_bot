@@ -21,11 +21,11 @@ class ThreadManager:
         for b in bcst:
             self.bcst_threads.append(ThreadBrdcst(b))
         for bt in self.bcst_threads:
-            bt.run()
+            bt.start()
 
     def add_brcst_thread(self, bcst):
         bt = ThreadBrdcst(bcst)
-        bt.run()
+        bt.start()
         self.bcst_threads.append(bt)
 
 
