@@ -10,7 +10,7 @@ BTN_ADMINS = "Администраторы"
 BTN_SUBS = "Подписчики"
 BTN_MENU = "Меню пользователя"
 BTN_ADD_BROADCAST_BY_TIME = 'Создать рассылку по расписанию'
-BTN_BROADCAST_BY_TIME = 'Рассылка по расписанию'
+BTN_BROADCAST_BY_TIME = 'Запланированные рассылки'
 
 
 START_WORDS = ['start', 'начать', 'старт']

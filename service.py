@@ -57,7 +57,7 @@ def admin_message_processing(uid, uname, text):
         brtcst = db.get_bcsts_by_time()
         msg = '🔥 Запланированные рассылки 🔥\n\n'
         for a in brtcst:
-            msg += cnst.MSG_PLANNED_BCST.format(a.start_date, a.time, a.repet_days, a.msg, a.id)
+            msg += cnst.MSG_PLANNED_BCST.format(a.start_date, a.time, a.repet_days, a.id, a.msg)
         msg += 'Для удаления рассылки введите её id.'
         vk.send_message_keyboard(uid, msg, cnst.KEYBOARD_CANCEL)
 
