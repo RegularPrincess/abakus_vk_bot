@@ -50,20 +50,15 @@ def admin_message_processing(uid, uname, text):
 
     elif text == cnst.BTN_ADD_BROADCAST_BY_TIME:
         IN_ADMIN_PANEL[uid] = m.BcstByTime()
-        vk.send_message_keyboard(uid, "Введите дату с которого следует начать рассылку, "
-                                      "затем время рассылки(мск), "
-                                      "затем количество дней через которое можем повторить.\n"
-                                      "Пример: 22.08.2018 15:22 3", cnst.KEYBOARD_CANCEL)
+        vk.send_message_keyboard(uid, cnst.MSG_ADD_BRDCST_BY_TIME, cnst.KEYBOARD_CANCEL)
 
     elif text == cnst.BTN_BROADCAST_BY_TIME:
         IN_ADMIN_PANEL[uid] = cnst.BTN_BROADCAST_BY_TIME
         brtcst = db.get_bcsts_by_time()
-        msg = 'Запланированные рассылки: \n\n'
+        msg = '🔥 Запланированные рассылки 🔥\n\n'
         for a in brtcst:
-            msg += 'Начало {} {}, частота повторений - {} дней\n' \
-                   'Сообщение: \"{}\"\n' \
-                   'id {} \n\n'.format(a.start_date, a.time, a.repet_days, a.msg, a.id)
-        msg += 'Для удаления рассылки введите её id'
+            msg += cnst.MSG_PLANNED_BCST.format(a.start_date, a.time, a.repet_days, a.msg, a.id)
+        msg += 'Для удаления рассылки введите её id.'
         vk.send_message_keyboard(uid, msg, cnst.KEYBOARD_CANCEL)
 
     elif text.lower() == cnst.CMD_PARSE_GROUP:
@@ -87,14 +82,14 @@ def admin_message_processing(uid, uname, text):
             bcst = utils.parse_bcst(text)
             IN_ADMIN_PANEL[uid] = bcst
             if bcst.date_time_is_not_sign():
-                vk.send_message(uid, "Некорректный формат")
+                vk.send_message(uid, "Некорректный формат. (22.08.2018 15:22 3)")
             else:
-                vk.send_message(uid, 'Введите текст рассылки')
+                vk.send_message(uid, cnst.MSG_ACCEPT_BROADCAST)
         else:
             IN_ADMIN_PANEL[uid].msg = text
             db.add_bcst(IN_ADMIN_PANEL[uid])
             thread_manager.add_brcst_thread(IN_ADMIN_PANEL[uid])
-            vk.send_message(uid, 'Рассылка создана')
+            vk.send_message_keyboard(uid, 'Рассылка создана!', cnst.KEYBOARD_ADMIN)
             thread_manager.add_brcst_thread(IN_ADMIN_PANEL[uid])
             IN_ADMIN_PANEL[uid] = None
 
@@ -120,6 +115,16 @@ def admin_message_processing(uid, uname, text):
             name = vk.get_user_name(admin_id)
             db.add_bot_admin(admin_id, name)
             vk.send_message_keyboard(uid, cnst.MSG_ADMIN_SUCCCES_ADDED, cnst.KEYBOARD_ADMIN)
+            IN_ADMIN_PANEL[uid] = ''
+        except ValueError:
+            msg = cnst.MSG_VALUE_ERROR
+            vk.send_message(uid, msg)
+
+    elif IN_ADMIN_PANEL[uid] == cnst.BTN_BROADCAST_BY_TIME:
+        try:
+            id = int(text)
+            db.delete_bcst(id)
+            vk.send_message_keyboard(uid, "Запланированная рассылка удалена", cnst.KEYBOARD_ADMIN)
             IN_ADMIN_PANEL[uid] = ''
         except ValueError:
             msg = cnst.MSG_VALUE_ERROR
