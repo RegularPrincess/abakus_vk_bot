@@ -83,10 +83,10 @@ def admin_message_processing(uid, uname, text):
         vk.send_message_keyboard(uid, cnst.MSG_CANCELED_MESSAGE, cnst.KEYBOARD_ADMIN)
 
     elif isinstance(IN_ADMIN_PANEL[uid], m.BcstByTime):
-        if IN_ADMIN_PANEL[uid].date_time_is_not_sign:
+        if IN_ADMIN_PANEL[uid].date_time_is_not_sign():
             bcst = utils.parse_bcst(text)
             IN_ADMIN_PANEL[uid] = bcst
-            if bcst is not None:
+            if bcst.date_time_is_not_sign():
                 vk.send_message(uid, 'Введите текст рассылки')
             else:
                 vk.send_message(uid, cnst.MSG_VALUE_ERROR)
