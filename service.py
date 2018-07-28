@@ -82,8 +82,7 @@ def admin_message_processing(uid, uname, text):
         IN_ADMIN_PANEL[uid] = ''
         vk.send_message_keyboard(uid, cnst.MSG_CANCELED_MESSAGE, cnst.KEYBOARD_ADMIN)
 
-
-    elif True:# IN_ADMIN_PANEL[uid] is m.BcstByTime:
+    elif IN_ADMIN_PANEL[uid] is m.BcstByTime:
         IN_ADMIN_PANEL[uid] = m.BcstByTime()
         if IN_ADMIN_PANEL[uid].date_time_is_not_sign:
             bcst = utils.parse_bcst(text)
@@ -98,7 +97,6 @@ def admin_message_processing(uid, uname, text):
             IN_ADMIN_PANEL[uid] = None
             vk.send_message(uid, 'Рассылка создана')
             utils.start_bcsts()
-
 
     elif IN_ADMIN_PANEL[uid] == cnst.BTN_BROADCAST:
         count = db.vk_emailing_to_all_subs(text)
@@ -133,7 +131,7 @@ def admin_message_processing(uid, uname, text):
 
 def message_processing(uid, text):
     uname = vk.get_user_name(uid)
-    if True: # uid in IN_ADMIN_PANEL:
+    if uid in IN_ADMIN_PANEL:
         admin_message_processing(uid, uname, text)
         return 'ok'
 
