@@ -81,14 +81,13 @@ def admin_message_processing(uid, uname, text):
         if IN_ADMIN_PANEL[uid].date_time_is_not_sign():
             bcst = utils.parse_bcst(text)
             IN_ADMIN_PANEL[uid] = bcst
-            if bcst.date_time_is_not_sign():
+            if bcst is None:
                 vk.send_message(uid, "Некорректный формат. (22.08.2018 15:22 3)")
             else:
                 vk.send_message(uid, cnst.MSG_ACCEPT_BROADCAST)
         else:
             IN_ADMIN_PANEL[uid].msg = text
             db.add_bcst(IN_ADMIN_PANEL[uid])
-            thread_manager.add_brcst_thread(IN_ADMIN_PANEL[uid])
             vk.send_message_keyboard(uid, 'Рассылка создана!', cnst.KEYBOARD_ADMIN)
             thread_manager.add_brcst_thread(IN_ADMIN_PANEL[uid])
             IN_ADMIN_PANEL[uid] = None

@@ -48,4 +48,4 @@ class ThreadBrdcst(Thread):
                 wait_time = (plane - now).total_seconds()
             time.sleep(wait_time)
             db.vk_emailing_to_all_subs(self.bcst.msg)
-            time.sleep(5)
+            time.sleep(61)

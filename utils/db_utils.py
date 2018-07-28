@@ -7,6 +7,8 @@ import config
 import consts as cnst
 import model as m
 from utils import vklib
+import datetime
+
 
 with sqlite3.connect(config.db_name) as connection:
     cursor = connection.cursor()
@@ -213,7 +215,9 @@ def get_bcsts_by_time():
         res = cursor.execute(sql).fetchall()
         print(res)
         for x in res:
-            item = m.BcstByTime(x[1], x[2], x[3], x[4], x[0])
+            item = m.BcstByTime(id=x[0], repet_days=x[3], msg=x[4])
+            item.start_date = datetime.datetime.strptime(x[1], '%Y-%m-%d').date()
+            item.time = datetime.datetime.strptime(x[2], '%H:%M').time()
             arr.append(item)
         connection.commit()
     return arr
