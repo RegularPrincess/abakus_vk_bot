@@ -115,9 +115,3 @@ def parse_bcst(text):
         return obj
     except BaseException:
         return None
-
-
-def start_bcsts():
-    return None
-
-parse_bcst('22.08.2018 15:22 3')

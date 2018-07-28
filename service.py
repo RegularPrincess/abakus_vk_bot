@@ -87,16 +87,16 @@ def admin_message_processing(uid, uname, text):
             bcst = utils.parse_bcst(text)
             IN_ADMIN_PANEL[uid] = bcst
             if bcst.date_time_is_not_sign():
-                vk.send_message(uid, 'Введите текст рассылки')
+                vk.send_message(uid, "Некорректный формат")
             else:
-                vk.send_message(uid, cnst.MSG_VALUE_ERROR)
+                vk.send_message(uid, 'Введите текст рассылки')
         else:
             IN_ADMIN_PANEL[uid].msg = text
             db.add_bcst(IN_ADMIN_PANEL[uid])
             thread_manager.add_brcst_thread(IN_ADMIN_PANEL[uid])
-            IN_ADMIN_PANEL[uid] = None
             vk.send_message(uid, 'Рассылка создана')
-            utils.start_bcsts()
+            thread_manager.add_brcst_thread(IN_ADMIN_PANEL[uid])
+            IN_ADMIN_PANEL[uid] = None
 
     elif IN_ADMIN_PANEL[uid] == cnst.BTN_BROADCAST:
         count = db.vk_emailing_to_all_subs(text)

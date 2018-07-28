@@ -226,7 +226,7 @@ def add_bcst(bcst):
     with sqlite3.connect(config.db_name) as connection:
         cursor = connection.cursor()
         sql = '''INSERT OR IGNORE INTO bcst_by_time (start_date, time, repet_days, msg) VALUES (?, ?, ?, ?)'''
-        cursor.execute(sql, (bcst.start_date, bcst.time, bcst.repet_days, bcst.msg))
+        cursor.execute(sql, (bcst.start_date.strftime("%Y-%m-%d"), bcst.time.strftime("%H:%M"), bcst.repet_days, bcst.msg))
         connection.commit()
 
 
