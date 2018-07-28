@@ -24,9 +24,12 @@ class ThreadManager:
             bt.start()
 
     def add_brcst_thread(self, bcst):
-        bt = ThreadBrdcst(bcst)
-        bt.start()
-        self.bcst_threads.append(bt)
+        db.add_bcst(bcst)
+        self.run_brdcst_shedule()
+
+    def delete_brcst(self, bcst):
+        db.delete_bcst(bcst.id)
+        self.run_brdcst_shedule()
 
 
 class ThreadBrdcst(Thread):

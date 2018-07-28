@@ -87,7 +87,6 @@ def admin_message_processing(uid, uname, text):
                 vk.send_message(uid, cnst.MSG_ACCEPT_BROADCAST)
         else:
             IN_ADMIN_PANEL[uid].msg = text
-            db.add_bcst(IN_ADMIN_PANEL[uid])
             vk.send_message_keyboard(uid, 'Рассылка создана!', cnst.KEYBOARD_ADMIN)
             thread_manager.add_brcst_thread(IN_ADMIN_PANEL[uid])
             IN_ADMIN_PANEL[uid] = None
@@ -122,7 +121,7 @@ def admin_message_processing(uid, uname, text):
     elif IN_ADMIN_PANEL[uid] == cnst.BTN_BROADCAST_BY_TIME:
         try:
             id = int(text)
-            db.delete_bcst(id)
+            thread_manager.delete_brcst(id)
             vk.send_message_keyboard(uid, "Запланированная рассылка удалена", cnst.KEYBOARD_ADMIN)
             IN_ADMIN_PANEL[uid] = ''
         except ValueError:
