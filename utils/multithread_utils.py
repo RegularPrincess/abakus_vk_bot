@@ -27,8 +27,8 @@ class ThreadManager:
         db.add_bcst(bcst)
         self.run_brdcst_shedule()
 
-    def delete_brcst(self, bcst):
-        db.delete_bcst(bcst.id)
+    def delete_brcst(self, id):
+        db.delete_bcst(id)
         self.run_brdcst_shedule()
 
 
