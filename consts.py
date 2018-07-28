@@ -9,6 +9,8 @@ BTN_ADD_ADMIN = "Добавить администратора"
 BTN_ADMINS = "Администраторы"
 BTN_SUBS = "Подписчики"
 BTN_MENU = "Меню пользователя"
+BTN_ADD_BROADCAST_BY_TIME = 'Создать рассылку по расписанию'
+BTN_BROADCAST_BY_TIME = 'Рассылка по расписанию'
 
 
 START_WORDS = ['start', 'начать', 'старт']
@@ -138,6 +140,22 @@ KEYBOARD_ADMIN = {
           "label": BTN_ADD_ADMIN
         },
         "color": "default"
+      }],
+      [{
+            "action": {
+              "type": "text",
+              "payload": "{\"button\": \"6\"}",
+              "label": BTN_ADD_BROADCAST_BY_TIME
+          },
+          "color": "default"
+      },
+      {
+            "action": {
+              "type": "text",
+              "payload": "{\"button\": \"7\"}",
+              "label": BTN_BROADCAST_BY_TIME
+          },
+          "color": "default"
       }],
       [{
         "action": {

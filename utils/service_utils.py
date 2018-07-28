@@ -1,9 +1,12 @@
 import os
 import re
+
+import datetime
 import requests
 
 import utils.vklib as vk
 import utils.db_utils as db
+import model as m
 import consts as cnst
 import config as cfg
 
@@ -101,3 +104,20 @@ def new_user_or_not(uid, uname):
         db.add_bot_follower(uid, uname, status=cnst.USER_NOT_SUB_STATUS, msg_allowed=1)
         vk.send_message_keyboard(uid, cnst.MSG_WELCOME_TO_COURSE.format(uname), cnst.KEYBOARD_USER)
 
+
+def parse_bcst(text):
+    try:
+        obj = m.BcstByTime()
+        text_arr = text.split(' ', maxsplit=3)
+        obj.start_date = datetime.datetime.strptime(text_arr[0], '%d.%m.%Y').date()
+        obj.time = datetime.datetime.strptime(text_arr[1], '%H:%M').time()
+        obj.repet_days = int(text_arr[2])
+        return obj
+    except BaseException:
+        return None
+
+
+def start_bcsts():
+    return None
+
+parse_bcst('22.08.2018 15:22 3')

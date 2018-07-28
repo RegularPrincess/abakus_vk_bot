@@ -23,6 +23,13 @@ with sqlite3.connect(config.db_name) as connection:
         uid INTEGER UNIQUE NOT NULL,
         name TEXT NOT NULL)'''
     cursor.execute(sql)
+    sql = '''CREATE TABLE IF NOT EXISTS bcst_by_time (
+            id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+            start_date TEXT NOT NULL,
+            time TEXT NOT NULL,
+            repet_days INTEGER NOT NULL,
+            msg TEXT NOT NULL )'''
+    cursor.execute(sql)
     sql = '''CREATE INDEX IF NOT EXISTS uid_known_users ON known_users (uid)'''
     cursor.execute(sql)
     # Add base admins to bot
@@ -193,3 +200,39 @@ def is_known_user(uid):
         sql = '''SELECT * FROM known_users WHERE uid = ? '''
         res = cursor.execute(sql, (uid, )).fetchall()
         return len(res) > 0
+
+
+def get_bcsts_by_time():
+    """
+    Получить все рассылки бота
+    """
+    arr = []
+    with sqlite3.connect(config.db_name) as connection:
+        cursor = connection.cursor()
+        sql = '''SELECT * FROM bcst_by_time'''
+        res = cursor.execute(sql).fetchall()
+        print(res)
+        for x in res:
+            item = m.BcstByTime(x[1], x[3], x[2], x[4], x[0])
+            arr.append(item)
+        connection.commit()
+    return arr
+
+
+def add_bcst(bcst):
+    """
+    Добавить рассылку
+    """
+    with sqlite3.connect(config.db_name) as connection:
+        cursor = connection.cursor()
+        sql = '''INSERT OR IGNORE INTO bcst_by_time (start_date, time, repet_days, msg) VALUES (?, ?, ?, ?)'''
+        cursor.execute(sql, (bcst.start_date, bcst.time, bcst.repet_days, bcst.msg))
+        connection.commit()
+
+
+def delete_bcst(id):
+    with sqlite3.connect(config.db_name) as connection:
+        cursor = connection.cursor()
+        sql = '''DELETE FROM bcst_by_time WHERE id=?'''
+        cursor.execute(sql, (id,))
+        connection.commit()

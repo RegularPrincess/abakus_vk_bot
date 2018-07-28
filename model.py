@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import consts as cnst
+import datetime as dt
 
 class Admin:
     def __init__(self, uid, name, status='member'):
@@ -57,4 +58,17 @@ class EnrollInfo:
         self.name = None
         self.email = None
         self.number = None
+
+
+# broadcast by time
+class BcstByTime:
+    def __init__(self, start_date=None, time=None, repet_days=None, msg=None, id=None):
+        self.start_date = start_date
+        self.time = time
+        self.repet_days = repet_days
+        self.msg = msg
+        self.id = id
+
+    def date_time_is_not_sign(self):
+        return self.start_date is None or self.time is None or self.repet_days is None
 
