@@ -82,6 +82,24 @@ def admin_message_processing(uid, uname, text):
         IN_ADMIN_PANEL[uid] = ''
         vk.send_message_keyboard(uid, cnst.MSG_CANCELED_MESSAGE, cnst.KEYBOARD_ADMIN)
 
+
+    elif True:# IN_ADMIN_PANEL[uid] is m.BcstByTime:
+        IN_ADMIN_PANEL[uid] = m.BcstByTime()
+        if IN_ADMIN_PANEL[uid].date_time_is_not_sign:
+            bcst = utils.parse_bcst(text)
+            if bcst is not None:
+                vk.send_message(uid, 'Введите текст рассылки')
+            else:
+                vk.send_message(uid, cnst.MSG_VALUE_ERROR)
+        else:
+            IN_ADMIN_PANEL[uid].msg = text
+            db.add_bcst(IN_ADMIN_PANEL[uid])
+            thread_manager.add_brcst_thread(IN_ADMIN_PANEL[uid])
+            IN_ADMIN_PANEL[uid] = None
+            vk.send_message(uid, 'Рассылка создана')
+            utils.start_bcsts()
+
+
     elif IN_ADMIN_PANEL[uid] == cnst.BTN_BROADCAST:
         count = db.vk_emailing_to_all_subs(text)
         vk.send_message_keyboard(uid, cnst.MSG_BROADCAST_COMPLETED.format(count), cnst.KEYBOARD_ADMIN)
@@ -108,20 +126,6 @@ def admin_message_processing(uid, uname, text):
         except ValueError:
             msg = cnst.MSG_VALUE_ERROR
             vk.send_message(uid, msg)
-
-    elif IN_ADMIN_PANEL[uid] is m.BcstByTime:
-        if IN_ADMIN_PANEL[uid].date_time_is_not_sign:
-            if utils.parse_bcst(text):
-                vk.send_message(uid, 'Введите текст рассылки')
-            else:
-                vk.send_message(uid, cnst.MSG_VALUE_ERROR)
-        else:
-            IN_ADMIN_PANEL[uid].msg = text
-            db.add_bcst(IN_ADMIN_PANEL[uid])
-            thread_manager.add_brcst_thread(IN_ADMIN_PANEL[uid])
-            IN_ADMIN_PANEL[uid] = None
-            vk.send_message(uid, 'Рассылка создана')
-            utils.start_bcsts()
     else:
         pass
         # vk.send_message(uid, cnst.MSG_DEFAULT_ANSWER)
@@ -129,7 +133,7 @@ def admin_message_processing(uid, uname, text):
 
 def message_processing(uid, text):
     uname = vk.get_user_name(uid)
-    if uid in IN_ADMIN_PANEL:
+    if True: # uid in IN_ADMIN_PANEL:
         admin_message_processing(uid, uname, text)
         return 'ok'
 
