@@ -15,7 +15,7 @@ IN_ADMIN_PANEL = {}
 thread_manager = mt.ThreadManager()
 
 thread_manager.run_brdcst_shedule()
-utils.send_message_admins_after_restart()
+#utils.send_message_admins_after_restart()
 
 
 def admin_message_processing(uid, uname, text):
@@ -82,10 +82,10 @@ def admin_message_processing(uid, uname, text):
         IN_ADMIN_PANEL[uid] = ''
         vk.send_message_keyboard(uid, cnst.MSG_CANCELED_MESSAGE, cnst.KEYBOARD_ADMIN)
 
-    elif IN_ADMIN_PANEL[uid] is m.BcstByTime:
-        IN_ADMIN_PANEL[uid] = m.BcstByTime()
+    elif isinstance(IN_ADMIN_PANEL[uid], m.BcstByTime):
         if IN_ADMIN_PANEL[uid].date_time_is_not_sign:
             bcst = utils.parse_bcst(text)
+            IN_ADMIN_PANEL[uid] = bcst
             if bcst is not None:
                 vk.send_message(uid, 'Введите текст рассылки')
             else:
