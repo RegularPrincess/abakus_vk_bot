@@ -12,6 +12,7 @@ import utils.multithread_utils as mt
 
 READY_TO_ENROLL = {}
 IN_ADMIN_PANEL = {}
+READY_TO_LEAVE = {}
 thread_manager = mt.ThreadManager()
 
 thread_manager.run_brdcst_shedule()
@@ -170,6 +171,12 @@ def message_processing(uid, text):
             else:
                 vk.send_message(uid, cnst.MSG_UNCORECT_NUMBER)
 
+    elif uid in READY_TO_LEAVE:
+        vk.send_message_keyboard(uid, cnst.MSG_THANK_YOU, cnst.KEYBOARD_USER)
+        admins = db.get_list_bot_admins()
+        vk.send_message_much(admins, cnst.MSG_USER_LEAVED.format(uid, text))
+        utils.del_uid_from_dict(uid, READY_TO_LEAVE)
+
     # Вход для админа
     elif text.lower() in cnst.ADMIN_KEY_WORDS and not_ready_to_enroll(uid):
         if db.is_admin(uid):
@@ -193,6 +200,8 @@ def group_leave(uid):
     db.set_bot_follower_status(uid, cnst.USER_LEAVE_STATUS)
     utils.del_uid_from_dict(uid, IN_ADMIN_PANEL)
     utils.del_uid_from_dict(uid, READY_TO_ENROLL)
+    READY_TO_LEAVE[uid] = None
+    vk.send_message_keyboard(uid, cnst.MSG_LEAVING, cnst.KEYBOARD_USER)
     return 'ok'
 
 
@@ -210,6 +219,7 @@ def group_join(uid):
     vk.send_message_keyboard(uid, cnst.MSG_WELCOME_TO_COURSE.format(uname), cnst.KEYBOARD_USER)
     utils.del_uid_from_dict(uid, IN_ADMIN_PANEL)
     utils.del_uid_from_dict(uid, READY_TO_ENROLL)
+    utils.del_uid_from_dict(uid, READY_TO_LEAVE)
     return 'ok'
 
 
