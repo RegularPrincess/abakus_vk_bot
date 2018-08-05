@@ -174,7 +174,7 @@ def message_processing(uid, text):
     elif uid in READY_TO_LEAVE:
         vk.send_message_keyboard(uid, cnst.MSG_THANK_YOU, cnst.KEYBOARD_USER)
         admins = db.get_list_bot_admins()
-        vk.send_message_much(admins, cnst.MSG_USER_LEAVED.format(uid, text))
+        vk.send_message_much(admins, cnst.MSG_USER_LEAVED.format(uname, uid, text))
         utils.del_uid_from_dict(uid, READY_TO_LEAVE)
 
     # Вход для админа
