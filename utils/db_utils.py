@@ -32,6 +32,10 @@ with sqlite3.connect(config.db_name) as connection:
             repet_days INTEGER NOT NULL,
             msg TEXT NOT NULL )'''
     cursor.execute(sql)
+    sql = '''CREATE TABLE IF NOT EXISTS leave_reason (
+                id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+                reason TEXT NOT NULL )'''
+    cursor.execute(sql)
     sql = '''CREATE INDEX IF NOT EXISTS uid_known_users ON known_users (uid)'''
     cursor.execute(sql)
     # Add base admins to bot
@@ -240,3 +244,39 @@ def delete_bcst(id):
         sql = '''DELETE FROM bcst_by_time WHERE id=?'''
         cursor.execute(sql, (id,))
         connection.commit()
+
+
+def add_leave_reason(reason):
+    """
+    Добавить причину отписки
+    """
+    with sqlite3.connect(config.db_name) as connection:
+        cursor = connection.cursor()
+        sql = '''INSERT OR IGNORE INTO leave_reason (reason) VALUES (?)'''
+        cursor.execute(sql, (reason,))
+        connection.commit()
+
+
+def delete_all_leave_reason():
+    with sqlite3.connect(config.db_name) as connection:
+        cursor = connection.cursor()
+        sql = '''DELETE FROM leave_reason'''
+        cursor.execute(sql)
+        connection.commit()
+
+
+def get_leave_reasons():
+    """
+    Получить причины отпички
+    """
+    arr = []
+    with sqlite3.connect(config.db_name) as connection:
+        cursor = connection.cursor()
+        sql = '''SELECT * FROM leave_reason'''
+        res = cursor.execute(sql).fetchall()
+        print(res)
+        for x in res:
+            item = x[1]
+            arr.append(item)
+        connection.commit()
+    return arr

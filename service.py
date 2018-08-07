@@ -74,6 +74,11 @@ def admin_message_processing(uid, uname, text):
         else:
             vk.send_message_keyboard(uid, cnst.MSG_YOU_NOT_ADMIN, cnst.KEYBOARD_USER)
 
+    elif text == cnst.BTN_LEAVE_REASON:
+        IN_ADMIN_PANEL[uid] = cnst.BTN_LEAVE_REASON
+        reasons = utils.get_leave_reasons_as_str()
+        vk.send_message_keyboard(uid, cnst.MSG_LEAVE_REASON.format(reasons), cnst.BTN_CANCEL)
+
     elif text == cnst.BTN_CANCEL:
         IN_ADMIN_PANEL[uid] = ''
         vk.send_message_keyboard(uid, cnst.MSG_CANCELED_MESSAGE, cnst.KEYBOARD_ADMIN)
@@ -128,6 +133,12 @@ def admin_message_processing(uid, uname, text):
         except ValueError:
             msg = cnst.MSG_VALUE_ERROR
             vk.send_message(uid, msg)
+
+    elif IN_ADMIN_PANEL[uid] == cnst.BTN_LEAVE_REASON:
+        db.delete_all_leave_reason()
+        count = utils.save_leave_reasons(text)
+        vk.send_message_keyboard(uid, cnst.MSG_LEAVE_REASON_SAVED.format(str(count)), cnst.KEYBOARD_ADMIN)
+        IN_ADMIN_PANEL[uid] = ''
     else:
         pass
         # vk.send_message(uid, cnst.MSG_DEFAULT_ANSWER)
@@ -201,7 +212,9 @@ def group_leave(uid):
     utils.del_uid_from_dict(uid, IN_ADMIN_PANEL)
     utils.del_uid_from_dict(uid, READY_TO_ENROLL)
     READY_TO_LEAVE[uid] = None
-    vk.send_message_keyboard(uid, cnst.MSG_LEAVING, cnst.KEYBOARD_USER)
+    reasons = db.get_leave_reasons()
+    k = utils.get_keyboard_from_list(reasons)
+    vk.send_message_keyboard(uid, cnst.MSG_LEAVING, k)
     return 'ok'
 
 

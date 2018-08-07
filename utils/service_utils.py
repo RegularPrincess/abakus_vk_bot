@@ -2,6 +2,8 @@ import os
 import re
 
 import datetime
+
+import copy
 import requests
 
 import utils.vklib as vk
@@ -115,3 +117,26 @@ def parse_bcst(text):
         return obj
     except BaseException:
         return None
+
+
+def get_leave_reasons_as_str():
+    reasons_list = db.get_leave_reasons()
+    reasons_str = ''
+    for r in reasons_list:
+        reasons_str += r + '\n'
+    return reasons_str
+
+
+def save_leave_reasons(reasons_str):
+    reasons = reasons_str.split('; ', 8)
+    for r in reasons:
+        db.add_leave_reason(r)
+    return len(reasons)
+
+
+def get_keyboard_from_list(list):
+    keyboard = copy.deepcopy(cnst.keyboard_pattern.copy())
+    for i in list:
+        two_btns = copy.deepcopy(cnst.one_button_pattern)
+        two_btns[0]['action']['label'] = i
+    return keyboard
