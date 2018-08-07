@@ -16,7 +16,7 @@ READY_TO_LEAVE = {}
 thread_manager = mt.ThreadManager()
 
 thread_manager.run_brdcst_shedule()
-utils.send_message_admins_after_restart()
+# utils.send_message_admins_after_restart()
 
 
 def admin_message_processing(uid, uname, text):
@@ -77,7 +77,9 @@ def admin_message_processing(uid, uname, text):
     elif text == cnst.BTN_LEAVE_REASON:
         IN_ADMIN_PANEL[uid] = cnst.BTN_LEAVE_REASON
         reasons = utils.get_leave_reasons_as_str()
-        vk.send_message_keyboard(uid, cnst.MSG_LEAVE_REASON.format(reasons), cnst.BTN_CANCEL)
+        if reasons == '':
+            reasons = '<Не указано ни одной>'
+        vk.send_message_keyboard(uid, cnst.MSG_LEAVE_REASON.format(reasons), cnst.KEYBOARD_CANCEL)
 
     elif text == cnst.BTN_CANCEL:
         IN_ADMIN_PANEL[uid] = ''
@@ -146,7 +148,7 @@ def admin_message_processing(uid, uname, text):
 
 def message_processing(uid, text):
     uname = vk.get_user_name(uid)
-    if uid in IN_ADMIN_PANEL:
+    if True:# uid in IN_ADMIN_PANEL:
         admin_message_processing(uid, uname, text)
         return 'ok'
 

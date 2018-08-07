@@ -49,7 +49,8 @@ def send_message_keyboard(user_id, text, keyboard):
         'keyboard': json.dumps(keyboard, ensure_ascii=False),
         'v': api_ver
     }
-    requests.post(config.vk_api_url + 'messages.send', data=data)
+    res = requests.post(config.vk_api_url + 'messages.send', data=data)
+    pass
 
 
 def get_group_memebers(group_id, offset=0, count=1000):

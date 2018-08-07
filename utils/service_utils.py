@@ -1,3 +1,4 @@
+import json
 import os
 import re
 
@@ -137,6 +138,8 @@ def save_leave_reasons(reasons_str):
 def get_keyboard_from_list(list):
     keyboard = copy.deepcopy(cnst.keyboard_pattern.copy())
     for i in list:
-        two_btns = copy.deepcopy(cnst.one_button_pattern)
-        two_btns[0]['action']['label'] = i
+        one_btns = copy.deepcopy(cnst.one_button_pattern)
+        one_btns[0]['action']['label'] = i
+        j = {"button": 'K'}
+        one_btns[0]['action']['payload'] = json.dumps(j)
     return keyboard
