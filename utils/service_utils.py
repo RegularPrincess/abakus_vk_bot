@@ -137,9 +137,15 @@ def save_leave_reasons(reasons_str):
 
 def get_keyboard_from_list(list):
     keyboard = copy.deepcopy(cnst.keyboard_pattern.copy())
+    c = 0
     for i in list:
+        if c == 7:
+            break
         one_btns = copy.deepcopy(cnst.one_button_pattern)
         one_btns[0]['action']['label'] = i
         j = {"button": 'K'}
         one_btns[0]['action']['payload'] = json.dumps(j)
+        keyboard['buttons'].append(one_btns)
+        c += 1
+    keyboard['buttons'].append(cnst.enroll_btn)
     return keyboard

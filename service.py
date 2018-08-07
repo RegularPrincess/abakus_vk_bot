@@ -16,7 +16,7 @@ READY_TO_LEAVE = {}
 thread_manager = mt.ThreadManager()
 
 thread_manager.run_brdcst_shedule()
-# utils.send_message_admins_after_restart()
+utils.send_message_admins_after_restart()
 
 
 def admin_message_processing(uid, uname, text):
@@ -186,6 +186,7 @@ def message_processing(uid, text):
 
     elif uid in READY_TO_LEAVE:
         vk.send_message_keyboard(uid, cnst.MSG_THANK_YOU, cnst.KEYBOARD_USER)
+        vk.send_message(uid, cnst.GROUP_LEAVE_MESSAGE.format(uname))
         admins = db.get_list_bot_admins()
         vk.send_message_much(admins, cnst.MSG_USER_LEAVED.format(uname, uid, text))
         utils.del_uid_from_dict(uid, READY_TO_LEAVE)
@@ -208,8 +209,6 @@ def not_ready_to_enroll(uid):
 
 
 def group_leave(uid):
-    uname = vk.get_user_name(uid)
-    vk.send_message_keyboard(uid, cnst.GROUP_LEAVE_MESSAGE.format(uname), cnst.EMPTY_KEYBOARD)
     db.set_bot_follower_status(uid, cnst.USER_LEAVE_STATUS)
     utils.del_uid_from_dict(uid, IN_ADMIN_PANEL)
     utils.del_uid_from_dict(uid, READY_TO_ENROLL)
