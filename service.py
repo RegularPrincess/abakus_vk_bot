@@ -62,7 +62,7 @@ def admin_message_processing(uid, uname, text):
         msg += 'Для удаления рассылки введите её id.'
         vk.send_message_keyboard(uid, msg, cnst.KEYBOARD_CANCEL)
 
-    elif True:# text == cnst.BTN_ADRESSES:
+    elif text == cnst.BTN_ADRESSES:
         IN_ADMIN_PANEL[uid] = cnst.BTN_ADRESSES
         vk.send_message_keyboard(uid, cnst.MSG_ADRESSES_, cnst.KEYBOARD_CANCEL)
         adresses = db.get_adresses()
@@ -170,7 +170,7 @@ def admin_message_processing(uid, uname, text):
 
 def message_processing(uid, text):
     uname = vk.get_user_name(uid)
-    if True:# uid in IN_ADMIN_PANEL:
+    if uid in IN_ADMIN_PANEL:
         admin_message_processing(uid, uname, text)
         return 'ok'
 
