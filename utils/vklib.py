@@ -32,10 +32,15 @@ def send_message(user_id, text):
     data = {
         'message': text,
         'user_id': user_id,
+        # 'lat': 32.45,
+        # 'long': 56.44,
         'access_token': config.token,
         'v': api_ver
     }
     requests.post(config.vk_api_url + 'messages.send', data=data)
+
+
+# send_message(259056624, 'geo?')
 
 
 def send_message_keyboard(user_id, text, keyboard):
