@@ -281,5 +281,6 @@ def message_deny(uid):
     db.set_bot_follower_mess_allowed(uid, 0)
     return 'ok'
 
+adr_names = db.get_adresses_name()
 keyboard = utils.get_keyboard_from_list([33333333, 444444444], def_btn=cnst.cancel_btn)
 vk.send_message_keyboard(259056624, cnst.SHOOSE_ADDRESS, keyboard)
