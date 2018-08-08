@@ -38,9 +38,9 @@ with sqlite3.connect(config.db_name) as connection:
     cursor.execute(sql)
     sql = '''CREATE TABLE IF NOT EXISTS adress (
             id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+            name TEXT NOT NULL,
             lat TEXT,
-            long TEXT,
-            name TEXT NOT NULL)'''
+            long TEXT)'''
     cursor.execute(sql)
     sql = '''CREATE INDEX IF NOT EXISTS uid_known_users ON known_users (uid)'''
     cursor.execute(sql)
