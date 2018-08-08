@@ -316,3 +316,28 @@ def get_adresses():
             arr.append(item)
         connection.commit()
     return arr
+
+
+def get_adresses_name():
+    arr = []
+    with sqlite3.connect(config.db_name) as connection:
+        cursor = connection.cursor()
+        sql = '''SELECT * FROM adress'''
+        res = cursor.execute(sql).fetchall()
+        print(res)
+        for x in res:
+            item = x[1]
+            arr.append(item)
+        connection.commit()
+    return arr
+
+
+def get_adress_by_name(name):
+    with sqlite3.connect(config.db_name) as connection:
+        cursor = connection.cursor()
+        sql = '''SELECT * FROM adress WHERE name LIKE ?'''
+        x = cursor.execute(sql, (name, )).fetchone()
+        print(x)
+        adress = m.Adress(x[1], x[2], x[3], x[0])
+        connection.commit()
+        return adress

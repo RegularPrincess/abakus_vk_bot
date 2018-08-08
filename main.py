@@ -45,7 +45,7 @@ def processing():
     elif data['type'] == 'message_new':
         uid = data['object']['from_id']
         text = data['object']['text']
-        answer = s.message_processing(uid, text)
+        answer = s.message_processing(uid, text, data)
         return answer
     elif data['type'] == 'group_leave':
         uid = data['object']['user_id']

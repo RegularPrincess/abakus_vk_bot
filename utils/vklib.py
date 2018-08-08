@@ -5,7 +5,6 @@ import json
 import requests
 import config
 
-
 api_ver = config.api_ver
 
 
@@ -244,3 +243,13 @@ def send_message_doc(user_id, text, doc):
         'v': api_ver
     }
     requests.post(config.vk_api_url + 'messages.send', data=data)
+
+
+def get_message_by_id(id):
+    data = {
+        "message_ids": id,
+        "preview_length": 0,
+        "extended": 0
+    }
+    res = requests.post(config.vk_api_url + 'messages.getById', data=data)
+

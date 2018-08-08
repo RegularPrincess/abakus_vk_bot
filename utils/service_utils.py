@@ -75,7 +75,7 @@ def del_uid_from_dict(uid, dict_):
 
 def send_message_admins(info):
     admins = db.get_list_bot_admins()
-    vk.send_message_much(admins, cnst.NOTIFY_ADMIN.format(info.uid, info.name, info.email, info.number))
+    vk.send_message_much(admins, cnst.NOTIFY_ADMIN.format(info.uid, info.name, info.email, info.number, info.adress))
 
 
 def send_message_admins_after_restart():
@@ -136,7 +136,7 @@ def save_leave_reasons(reasons_str):
     return len(reasons)
 
 
-def get_keyboard_from_list(list):
+def get_keyboard_from_list(list, def_btn=cnst.enroll_btn):
     keyboard = copy.deepcopy(cnst.keyboard_pattern.copy())
     c = 0
     for i in list:
@@ -148,7 +148,7 @@ def get_keyboard_from_list(list):
         one_btns[0]['action']['payload'] = json.dumps(j)
         keyboard['buttons'].append(one_btns)
         c += 1
-    keyboard['buttons'].append(cnst.enroll_btn)
+    keyboard['buttons'].append(def_btn)
     return keyboard
 
 
@@ -165,6 +165,9 @@ def save_adress(name):
         return None
 
 
-def send_adresses(uid, adresses):
+def send_adresses(uid, adresses, need_id=True):
     for a in adresses:
-        vk.send_message_geo(uid, a.name, a.lat, a.long)
+        if need_id:
+            vk.send_message_geo(uid, cnst.MSG_ADRESS_INFO.format(a.id, a.name), a.lat, a.long)
+        else:
+            vk.send_message_geo(uid, a.name, a.lat, a.long)

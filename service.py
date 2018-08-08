@@ -19,7 +19,7 @@ thread_manager.run_brdcst_shedule()
 utils.send_message_admins_after_restart()
 
 
-def admin_message_processing(uid, uname, text):
+def admin_message_processing(uid, uname, text, data):
     if text == cnst.BTN_ADMIN_EXIT:
         utils.del_uid_from_dict(uid, IN_ADMIN_PANEL)
         vk.send_message_keyboard(uid, cnst.MSG_WELCOME_TO_COURSE.format(uname), cnst.KEYBOARD_USER)
@@ -62,7 +62,7 @@ def admin_message_processing(uid, uname, text):
         msg += 'Для удаления рассылки введите её id.'
         vk.send_message_keyboard(uid, msg, cnst.KEYBOARD_CANCEL)
 
-    elif text == cnst.BTN_ADRESSES:
+    elif True:# text == cnst.BTN_ADRESSES:
         IN_ADMIN_PANEL[uid] = cnst.BTN_ADRESSES
         vk.send_message_keyboard(uid, cnst.MSG_ADRESSES_, cnst.KEYBOARD_CANCEL)
         adresses = db.get_adresses()
@@ -170,7 +170,7 @@ def admin_message_processing(uid, uname, text):
 
 def message_processing(uid, text):
     uname = vk.get_user_name(uid)
-    if uid in IN_ADMIN_PANEL:
+    if True:# uid in IN_ADMIN_PANEL:
         admin_message_processing(uid, uname, text)
         return 'ok'
 
@@ -200,11 +200,22 @@ def message_processing(uid, text):
         elif not READY_TO_ENROLL[uid].number_is_sign():
             if utils.is_number_valid(text):
                 READY_TO_ENROLL[uid].set_number(text)
+                adresses = db.get_adresses()
+                utils.send_adresses(uid, adresses, need_id=False)
+                adr_names = db.get_adresses_name()
+                keyboard = utils.get_keyboard_from_list(adr_names, def_btn=cnst.cancel_btn)
+                vk.send_message_keyboard(uid, cnst.SHOOSE_ADDRESS, keyboard)
+            else:
+                vk.send_message(uid, cnst.MSG_UNCORECT_NUMBER)
+        elif not READY_TO_ENROLL[uid].adress_is_sign():
+            adresses = db.get_adress_by_name(text)
+            if adresses.is_sign():
+                READY_TO_ENROLL[uid].set_adress(text)
                 vk.send_message_keyboard(uid, cnst.MSG_ENROLL_COMPLETED.format(READY_TO_ENROLL[uid].name), cnst.KEYBOARD_USER)
                 utils.send_message_admins(READY_TO_ENROLL[uid])
                 utils.del_uid_from_dict(uid, READY_TO_ENROLL)
             else:
-                vk.send_message(uid, cnst.MSG_UNCORECT_NUMBER)
+                vk.send_message(uid, cnst.SHOOSE_ADDRESS)
 
     elif uid in READY_TO_LEAVE:
         vk.send_message_keyboard(uid, cnst.MSG_THANK_YOU, cnst.KEYBOARD_USER)

@@ -29,6 +29,7 @@ class EnrollInfo:
         self.name = None
         self.email = None
         self.number = None
+        self.adress = None
 
     def name_is_sign(self):
         return self.name is not None
@@ -38,6 +39,9 @@ class EnrollInfo:
 
     def number_is_sign(self):
         return self.number is not None
+
+    def adress_is_sign(self):
+        return self.adress is not None
 
     def set_name(self, name):
         self.name = name
@@ -51,6 +55,12 @@ class EnrollInfo:
     def set_number(self, number):
         if self.name_is_sign() and self.email_is_sign():
             self.number = number
+        else:
+            raise BaseException()
+
+    def set_adress(self, adress):
+        if self.number_is_sign():
+            self.adress = adress
         else:
             raise BaseException()
 
@@ -79,3 +89,6 @@ class Adress:
         self.lat = lat
         self.long = long
         self.id = id
+
+    def is_sign(self):
+        return self.name is not None
