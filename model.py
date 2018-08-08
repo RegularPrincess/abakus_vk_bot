@@ -72,3 +72,10 @@ class BcstByTime:
     def date_time_is_not_sign(self):
         return self.start_date is None or self.time is None or self.repet_days is None
 
+
+class Adress:
+    def __init__(self, name, lat, long, id=0):
+        self.name = name
+        self.lat = lat
+        self.long = long
+        self.id = id

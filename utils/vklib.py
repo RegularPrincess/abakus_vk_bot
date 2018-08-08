@@ -40,6 +40,21 @@ def send_message(user_id, text):
     requests.post(config.vk_api_url + 'messages.send', data=data)
 
 
+def send_message_geo(user_id, text, lat, long):
+    """
+    Send VK message with map
+    """
+    data = {
+        'message': text,
+        'user_id': user_id,
+        'lat': lat,
+        'long': long,
+        'access_token': config.token,
+        'v': api_ver
+    }
+    requests.post(config.vk_api_url + 'messages.send', data=data)
+
+
 # send_message(259056624, 'geo?')
 
 

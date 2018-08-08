@@ -36,6 +36,12 @@ with sqlite3.connect(config.db_name) as connection:
                 id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
                 reason TEXT NOT NULL )'''
     cursor.execute(sql)
+    sql = '''CREATE TABLE IF NOT EXISTS adress (
+            id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+            lat TEXT,
+            long TEXT,
+            name TEXT NOT NULL)'''
+    cursor.execute(sql)
     sql = '''CREATE INDEX IF NOT EXISTS uid_known_users ON known_users (uid)'''
     cursor.execute(sql)
     # Add base admins to bot
@@ -277,6 +283,36 @@ def get_leave_reasons():
         print(res)
         for x in res:
             item = x[1]
+            arr.append(item)
+        connection.commit()
+    return arr
+
+
+def add_adress(name, lat, long):
+    with sqlite3.connect(config.db_name) as connection:
+        cursor = connection.cursor()
+        sql = '''INSERT OR IGNORE INTO adress (name, lat, long) VALUES (?, ?, ?)'''
+        cursor.execute(sql, (name, lat, long))
+        connection.commit()
+
+
+def delete_adress(id):
+    with sqlite3.connect(config.db_name) as connection:
+        cursor = connection.cursor()
+        sql = '''DELETE FROM adress WHERE id=?'''
+        cursor.execute(sql, (id, ))
+        connection.commit()
+
+
+def get_adresses():
+    arr = []
+    with sqlite3.connect(config.db_name) as connection:
+        cursor = connection.cursor()
+        sql = '''SELECT * FROM adress'''
+        res = cursor.execute(sql).fetchall()
+        print(res)
+        for x in res:
+            item = m.Adress(x[1], x[2], x[3], x[0])
             arr.append(item)
         connection.commit()
     return arr

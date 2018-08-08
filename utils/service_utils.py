@@ -12,6 +12,7 @@ import utils.db_utils as db
 import model as m
 import consts as cnst
 import config as cfg
+from geopy.geocoders import Nominatim
 
 
 def make_subs_file(uid):
@@ -149,3 +150,20 @@ def get_keyboard_from_list(list):
         c += 1
     keyboard['buttons'].append(cnst.enroll_btn)
     return keyboard
+
+
+def save_adress(name):
+    try:
+        geolocator = Nominatim(user_agent="geo_bot")
+        location = geolocator.geocode(name)
+        lat = location.latitude
+        long = location.longitude
+        adress = m.Adress(name, lat, long)
+        return adress
+    except Exception:
+        return None
+
+
+def send_adresses(uid, adresses):
+    for a in adresses:
+        vk.send_message_geo(uid, a.name, a.lat, a.long)

@@ -20,7 +20,7 @@ thread_manager.run_brdcst_shedule()
 
 
 def admin_message_processing(uid, uname, text):
-    if text == cnst.MSG_ADMIN_EXIT:
+    if text == cnst.BTN_ADMIN_EXIT:
         utils.del_uid_from_dict(uid, IN_ADMIN_PANEL)
         vk.send_message_keyboard(uid, cnst.MSG_WELCOME_TO_COURSE.format(uname), cnst.KEYBOARD_USER)
 
@@ -62,6 +62,13 @@ def admin_message_processing(uid, uname, text):
         msg += 'Для удаления рассылки введите её id.'
         vk.send_message_keyboard(uid, msg, cnst.KEYBOARD_CANCEL)
 
+    elif text == cnst.BTN_ADRESSES:
+        IN_ADMIN_PANEL[uid] = cnst.BTN_ADRESSES
+        vk.send_message_keyboard(uid, cnst.MSG_ADRESSES_, cnst.KEYBOARD_CANCEL)
+        adresses = db.get_adresses()
+        utils.send_adresses(uid, adresses)
+        vk.send_message_keyboard(uid, cnst.MSG_ADRESSES_CHANGE, cnst.KEYBOARD_CANCEL)
+
     elif text.lower() == cnst.CMD_PARSE_GROUP:
         if db.is_admin(uid):
             members_count = utils.get_group_count()
@@ -98,6 +105,21 @@ def admin_message_processing(uid, uname, text):
             vk.send_message_keyboard(uid, 'Рассылка создана!', cnst.KEYBOARD_ADMIN)
             thread_manager.add_brcst_thread(IN_ADMIN_PANEL[uid])
             IN_ADMIN_PANEL[uid] = None
+
+    elif IN_ADMIN_PANEL[uid] == cnst.BTN_ADRESSES:
+        try:
+            id = int(text)
+            db.delete_adress(id)
+            msg = cnst.MSG_ADRESSES_REMOVED
+            vk.send_message_keyboard(uid, msg, cnst.KEYBOARD_ADMIN)
+            IN_ADMIN_PANEL[uid] = ''
+        except ValueError:
+            a = utils.save_adress(text)
+            if a is None:
+                vk.send_message(uid, cnst.MSG_ADRESS_ERROR)
+            else:
+                vk.send_message_keyboard(uid, cnst.MSG_ADRESS_SAVED, cnst.KEYBOARD_ADMIN)
+                IN_ADMIN_PANEL[uid] = ''
 
     elif IN_ADMIN_PANEL[uid] == cnst.BTN_BROADCAST:
         count = db.vk_emailing_to_all_subs(text)
