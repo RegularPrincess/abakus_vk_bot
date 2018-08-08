@@ -159,6 +159,7 @@ def save_adress(name):
         lat = location.latitude
         long = location.longitude
         adress = m.Adress(name, lat, long)
+        db.add_adress(name, lat, long)
         return adress
     except Exception:
         return None

@@ -92,20 +92,6 @@ def admin_message_processing(uid, uname, text):
         IN_ADMIN_PANEL[uid] = ''
         vk.send_message_keyboard(uid, cnst.MSG_CANCELED_MESSAGE, cnst.KEYBOARD_ADMIN)
 
-    elif isinstance(IN_ADMIN_PANEL[uid], m.BcstByTime):
-        if IN_ADMIN_PANEL[uid].date_time_is_not_sign():
-            bcst = utils.parse_bcst(text)
-            IN_ADMIN_PANEL[uid] = bcst
-            if bcst is None:
-                vk.send_message(uid, "Некорректный формат. (22.08.2018 15:22 3)")
-            else:
-                vk.send_message(uid, cnst.MSG_ACCEPT_BROADCAST)
-        else:
-            IN_ADMIN_PANEL[uid].msg = text
-            vk.send_message_keyboard(uid, 'Рассылка создана!', cnst.KEYBOARD_ADMIN)
-            thread_manager.add_brcst_thread(IN_ADMIN_PANEL[uid])
-            IN_ADMIN_PANEL[uid] = None
-
     elif IN_ADMIN_PANEL[uid] == cnst.BTN_ADRESSES:
         try:
             id = int(text)
@@ -120,6 +106,20 @@ def admin_message_processing(uid, uname, text):
             else:
                 vk.send_message_keyboard(uid, cnst.MSG_ADRESS_SAVED, cnst.KEYBOARD_ADMIN)
                 IN_ADMIN_PANEL[uid] = ''
+
+    elif isinstance(IN_ADMIN_PANEL[uid], m.BcstByTime):
+        if IN_ADMIN_PANEL[uid].date_time_is_not_sign():
+            bcst = utils.parse_bcst(text)
+            IN_ADMIN_PANEL[uid] = bcst
+            if bcst is None:
+                vk.send_message(uid, "Некорректный формат. (22.08.2018 15:22 3)")
+            else:
+                vk.send_message(uid, cnst.MSG_ACCEPT_BROADCAST)
+        else:
+            IN_ADMIN_PANEL[uid].msg = text
+            vk.send_message_keyboard(uid, 'Рассылка создана!', cnst.KEYBOARD_ADMIN)
+            thread_manager.add_brcst_thread(IN_ADMIN_PANEL[uid])
+            IN_ADMIN_PANEL[uid] = None
 
     elif IN_ADMIN_PANEL[uid] == cnst.BTN_BROADCAST:
         count = db.vk_emailing_to_all_subs(text)

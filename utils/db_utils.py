@@ -291,7 +291,7 @@ def get_leave_reasons():
 def add_adress(name, lat, long):
     with sqlite3.connect(config.db_name) as connection:
         cursor = connection.cursor()
-        sql = '''INSERT OR IGNORE INTO adress (name, lat, long) VALUES (?, ?, ?)'''
+        sql = '''INSERT INTO adress (name, lat, long) VALUES (?, ?, ?)'''
         cursor.execute(sql, (name, lat, long))
         connection.commit()
 
