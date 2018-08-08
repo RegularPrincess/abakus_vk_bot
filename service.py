@@ -19,7 +19,7 @@ thread_manager.run_brdcst_shedule()
 utils.send_message_admins_after_restart()
 
 
-def admin_message_processing(uid, uname, text, data):
+def admin_message_processing(uid, uname, text):
     if text == cnst.BTN_ADMIN_EXIT:
         utils.del_uid_from_dict(uid, IN_ADMIN_PANEL)
         vk.send_message_keyboard(uid, cnst.MSG_WELCOME_TO_COURSE.format(uname), cnst.KEYBOARD_USER)
