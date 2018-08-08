@@ -202,6 +202,7 @@ def message_processing(uid, text):
                 READY_TO_ENROLL[uid].set_number(text)
                 adresses = db.get_adresses()
                 utils.send_adresses(uid, adresses, need_id=False)
+                vk.send_message_keyboard(uid, "test", "")
                 adr_names = db.get_adresses_name()
                 keyboard = utils.get_keyboard_from_list(adr_names, def_btn=cnst.cancel_btn)
                 vk.send_message_keyboard(uid, cnst.SHOOSE_ADDRESS, keyboard)
