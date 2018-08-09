@@ -84,11 +84,14 @@ class BcstByTime:
 
 
 class Adress:
-    def __init__(self, name, lat, long, id=0):
+    def __init__(self, name=None, lat=None, long=None, id=0):
         self.name = name
         self.lat = lat
         self.long = long
         self.id = id
+        self.city = None
+        self.street = None
+        self.build_num = None
 
     def is_sign(self):
         return self.name is not None

@@ -63,7 +63,7 @@ def admin_message_processing(uid, uname, text):
         vk.send_message_keyboard(uid, msg, cnst.KEYBOARD_CANCEL)
 
     elif text == cnst.BTN_ADRESSES:
-        IN_ADMIN_PANEL[uid] = cnst.BTN_ADRESSES
+        IN_ADMIN_PANEL[uid] = m.Adress()
         vk.send_message_keyboard(uid, cnst.MSG_ADRESSES_, cnst.KEYBOARD_CANCEL)
         adresses = db.get_adresses()
         utils.send_adresses(uid, adresses)
@@ -92,7 +92,7 @@ def admin_message_processing(uid, uname, text):
         IN_ADMIN_PANEL[uid] = ''
         vk.send_message_keyboard(uid, cnst.MSG_CANCELED_MESSAGE, cnst.KEYBOARD_ADMIN)
 
-    elif IN_ADMIN_PANEL[uid] == cnst.BTN_ADRESSES:
+    elif isinstance(IN_ADMIN_PANEL[uid], m.Adress):
         try:
             id = int(text)
             db.delete_adress(id)
@@ -100,11 +100,23 @@ def admin_message_processing(uid, uname, text):
             vk.send_message_keyboard(uid, msg, cnst.KEYBOARD_ADMIN)
             IN_ADMIN_PANEL[uid] = ''
         except ValueError:
-            a = utils.save_adress(text)
-            if a is None:
-                vk.send_message(uid, cnst.MSG_ADRESS_ERROR)
-            else:
-                vk.send_message_keyboard(uid, cnst.MSG_ADRESS_SAVED, cnst.KEYBOARD_ADMIN)
+            if IN_ADMIN_PANEL[uid].city is None:
+                IN_ADMIN_PANEL[uid].city = text
+                vk.send_message(uid, 'Теперь введите название улицы.')
+            elif IN_ADMIN_PANEL[uid].street is None:
+                IN_ADMIN_PANEL[uid].street = text
+                vk.send_message(uid, 'Теперь введите номер дома.')
+            elif IN_ADMIN_PANEL[uid].build_num is None:
+                IN_ADMIN_PANEL[uid].build_num = text
+                adr_str = '{}, {}, {}'.\
+                    format(IN_ADMIN_PANEL[uid].street,
+                           IN_ADMIN_PANEL[uid].build_num,
+                           IN_ADMIN_PANEL[uid].city)
+                a = utils.save_adress(adr_str)
+                if a is None:
+                    vk.send_message_keyboard(uid, cnst.MSG_ADRESS_ERROR, cnst.KEYBOARD_ADMIN)
+                else:
+                    vk.send_message_keyboard(uid, cnst.MSG_ADRESS_SAVED, cnst.KEYBOARD_ADMIN)
                 IN_ADMIN_PANEL[uid] = ''
 
     elif isinstance(IN_ADMIN_PANEL[uid], m.BcstByTime):
