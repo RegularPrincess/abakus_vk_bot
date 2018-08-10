@@ -94,6 +94,8 @@ def admin_message_processing(uid, uname, text):
 
     elif isinstance(IN_ADMIN_PANEL[uid], m.Adress):
         try:
+            if IN_ADMIN_PANEL[uid].city is not None:
+                id = int('not_number')
             id = int(text)
             db.delete_adress(id)
             msg = cnst.MSG_ADRESSES_REMOVED
