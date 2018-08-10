@@ -152,14 +152,14 @@ def get_keyboard_from_list(list, def_btn=cnst.enroll_btn):
     return keyboard
 
 
-def save_adress(name):
+def save_adress(name, links):
     try:
         geolocator = Nominatim(user_agent="geo_bot")
         location = geolocator.geocode(name)
         lat = location.latitude
         long = location.longitude
         adress = m.Adress(name, lat, long)
-        db.add_adress(name, lat, long)
+        db.add_adress(name, lat, long, link=links)
         return adress
     except Exception:
         return None

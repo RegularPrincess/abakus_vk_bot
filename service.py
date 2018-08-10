@@ -88,9 +88,13 @@ def admin_message_processing(uid, uname, text):
             reasons = '<Не указано ни одной>'
         vk.send_message_keyboard(uid, cnst.MSG_LEAVE_REASON.format(reasons), cnst.KEYBOARD_CANCEL)
 
-    elif text == cnst.BTN_CANCEL:
+    elif text == cnst.BTN_CANCEL or text == cnst.BTN_END:
         IN_ADMIN_PANEL[uid] = ''
-        vk.send_message_keyboard(uid, cnst.MSG_CANCELED_MESSAGE, cnst.KEYBOARD_ADMIN)
+        if text == cnst.BTN_END:
+            msg = cnst.MSG_END
+        else:
+            msg = cnst.MSG_CANCELED_MESSAGE
+        vk.send_message_keyboard(uid, msg, cnst.KEYBOARD_ADMIN)
 
     elif isinstance(IN_ADMIN_PANEL[uid], m.Adress):
         try:
@@ -110,15 +114,21 @@ def admin_message_processing(uid, uname, text):
                 vk.send_message(uid, 'Теперь введите номер дома.')
             elif IN_ADMIN_PANEL[uid].build_num is None:
                 IN_ADMIN_PANEL[uid].build_num = text
-                adr_str = '{}, {}, {}'.\
+                vk.send_message_keyboard(uid, cnst.MSG_ADRESS_SAVED, cnst.KEYBOARD_END_AND_CANCELE)
+            elif IN_ADMIN_PANEL[uid].build_num is not None:
+                IN_ADMIN_PANEL[uid].build_num += text + cnst.SEPARATOR
+                vk.send_message_keyboard(uid, cnst.MSG_ADDING_MORE_ADRESS_OR_NOT, cnst.KEYBOARD_END_AND_CANCELE)
+            elif text == cnst.BTN_END:
+                vk.send_message_keyboard(uid, 'Сохранено', cnst.KEYBOARD_ADMIN)
+                adr_str = '{}, {}, {}'. \
                     format(IN_ADMIN_PANEL[uid].street,
                            IN_ADMIN_PANEL[uid].build_num,
                            IN_ADMIN_PANEL[uid].city)
-                a = utils.save_adress(adr_str)
+                a = utils.save_adress(adr_str, IN_ADMIN_PANEL[uid].link)
                 if a is None:
                     vk.send_message_keyboard(uid, cnst.MSG_ADRESS_ERROR, cnst.KEYBOARD_ADMIN)
                 else:
-                    vk.send_message_keyboard(uid, cnst.MSG_ADRESS_SAVED, cnst.KEYBOARD_ADMIN)
+                    vk.send_message(uid, cnst.MSG_END_ADDING_ADRESS_OR_NOT)
                 IN_ADMIN_PANEL[uid] = ''
 
     elif isinstance(IN_ADMIN_PANEL[uid], m.BcstByTime):
@@ -214,8 +224,8 @@ def message_processing(uid, text):
         elif not READY_TO_ENROLL[uid].number_is_sign():
             if utils.is_number_valid(text):
                 READY_TO_ENROLL[uid].set_number(text)
-                adresses = db.get_adresses()
-                utils.send_adresses(uid, adresses, need_id=False)
+                adress = db.get_adresses()
+                utils.send_adresses(uid, adress, need_id=False)
                 vk.send_message_keyboard(uid, "test", "")
                 adr_names = db.get_adresses_name()
                 keyboard = utils.get_keyboard_from_list(adr_names, def_btn=cnst.cancel_btn)
@@ -223,9 +233,14 @@ def message_processing(uid, text):
             else:
                 vk.send_message(uid, cnst.MSG_UNCORECT_NUMBER)
         elif not READY_TO_ENROLL[uid].adress_is_sign():
-            adresses = db.get_adress_by_name(text)
-            if adresses.is_sign():
+            adress = db.get_adress_by_name(text)
+            if adress.is_sign():
                 READY_TO_ENROLL[uid].set_adress(text)
+                links = adress.get_links()
+                msg_links = 'Ссылки на выбранный офис: \n'
+                for l in links:
+                    msg_links += '👉 {} \n'.format(l)
+                vk.send_message(uid, msg_links)
                 vk.send_message_keyboard(uid, cnst.MSG_ENROLL_COMPLETED.format(READY_TO_ENROLL[uid].name), cnst.KEYBOARD_USER)
                 utils.send_message_admins(READY_TO_ENROLL[uid])
                 utils.del_uid_from_dict(uid, READY_TO_ENROLL)

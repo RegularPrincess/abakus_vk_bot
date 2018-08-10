@@ -40,7 +40,8 @@ with sqlite3.connect(config.db_name) as connection:
             id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
             name TEXT NOT NULL,
             lat TEXT,
-            long TEXT)'''
+            long TEXT,
+            link TEXT)'''
     cursor.execute(sql)
     sql = '''CREATE INDEX IF NOT EXISTS uid_known_users ON known_users (uid)'''
     cursor.execute(sql)
@@ -288,11 +289,11 @@ def get_leave_reasons():
     return arr
 
 
-def add_adress(name, lat, long):
+def add_adress(name, lat, long, link):
     with sqlite3.connect(config.db_name) as connection:
         cursor = connection.cursor()
-        sql = '''INSERT INTO adress (name, lat, long) VALUES (?, ?, ?)'''
-        cursor.execute(sql, (name, lat, long))
+        sql = '''INSERT INTO adress (name, lat, long, link) VALUES (?, ?, ?, ?)'''
+        cursor.execute(sql, (name, lat, long, link))
         connection.commit()
 
 
@@ -312,7 +313,7 @@ def get_adresses():
         res = cursor.execute(sql).fetchall()
         print(res)
         for x in res:
-            item = m.Adress(x[1], x[2], x[3], x[0])
+            item = m.Adress(x[1], x[2], x[3], x[4], x[0])
             arr.append(item)
         connection.commit()
     return arr
@@ -338,6 +339,6 @@ def get_adress_by_name(name):
         sql = '''SELECT * FROM adress WHERE name LIKE ?'''
         x = cursor.execute(sql, (name, )).fetchone()
         print(x)
-        adress = m.Adress(x[1], x[2], x[3], x[0])
+        adress = m.Adress(x[1], x[2], x[3], x[4], x[0])
         connection.commit()
         return adress
