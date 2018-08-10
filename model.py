@@ -99,4 +99,4 @@ class Adress:
 
     def get_links(self):
         if self.link is not None:
-            return self.link.split(cnst.SEPARATOR)
+            return self.link.split(cnst.SEPARATOR)[:-1]
