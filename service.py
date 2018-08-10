@@ -115,9 +115,6 @@ def admin_message_processing(uid, uname, text):
             elif IN_ADMIN_PANEL[uid].build_num is None:
                 IN_ADMIN_PANEL[uid].build_num = text
                 vk.send_message_keyboard(uid, cnst.MSG_END_ADDING_ADRESS_OR_NOT, cnst.KEYBOARD_END_AND_CANCELE)
-            elif IN_ADMIN_PANEL[uid].build_num is not None:
-                IN_ADMIN_PANEL[uid].build_num += text + cnst.SEPARATOR
-                vk.send_message_keyboard(uid, cnst.MSG_ADDING_MORE_ADRESS_OR_NOT, cnst.KEYBOARD_END_AND_CANCELE)
             elif text == cnst.BTN_END:
                 adr_str = '{}, {}, {}'. \
                     format(IN_ADMIN_PANEL[uid].street,
@@ -129,6 +126,10 @@ def admin_message_processing(uid, uname, text):
                 else:
                     vk.send_message_keyboard(uid, 'Сохранено', cnst.KEYBOARD_ADMIN)
                 IN_ADMIN_PANEL[uid] = ''
+            elif IN_ADMIN_PANEL[uid].build_num is not None:
+                IN_ADMIN_PANEL[uid].build_num += text + cnst.SEPARATOR
+                vk.send_message_keyboard(uid, cnst.MSG_ADDING_MORE_ADRESS_OR_NOT, cnst.KEYBOARD_END_AND_CANCELE)
+
 
     elif isinstance(IN_ADMIN_PANEL[uid], m.BcstByTime):
         if IN_ADMIN_PANEL[uid].date_time_is_not_sign():
