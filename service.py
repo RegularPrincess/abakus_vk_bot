@@ -88,7 +88,7 @@ def admin_message_processing(uid, uname, text):
             reasons = '<Не указано ни одной>'
         vk.send_message_keyboard(uid, cnst.MSG_LEAVE_REASON.format(reasons), cnst.KEYBOARD_CANCEL)
 
-    elif text == cnst.BTN_CANCEL or text == cnst.BTN_END:
+    elif text == cnst.BTN_CANCEL: #or text == cnst.BTN_END:
         IN_ADMIN_PANEL[uid] = ''
         if text == cnst.BTN_END:
             msg = cnst.MSG_END
@@ -114,12 +114,11 @@ def admin_message_processing(uid, uname, text):
                 vk.send_message(uid, 'Теперь введите номер дома.')
             elif IN_ADMIN_PANEL[uid].build_num is None:
                 IN_ADMIN_PANEL[uid].build_num = text
-                vk.send_message_keyboard(uid, cnst.MSG_ADRESS_SAVED, cnst.KEYBOARD_END_AND_CANCELE)
+                vk.send_message_keyboard(uid, cnst.MSG_END_ADDING_ADRESS_OR_NOT, cnst.KEYBOARD_END_AND_CANCELE)
             elif IN_ADMIN_PANEL[uid].build_num is not None:
                 IN_ADMIN_PANEL[uid].build_num += text + cnst.SEPARATOR
                 vk.send_message_keyboard(uid, cnst.MSG_ADDING_MORE_ADRESS_OR_NOT, cnst.KEYBOARD_END_AND_CANCELE)
             elif text == cnst.BTN_END:
-                vk.send_message_keyboard(uid, 'Сохранено', cnst.KEYBOARD_ADMIN)
                 adr_str = '{}, {}, {}'. \
                     format(IN_ADMIN_PANEL[uid].street,
                            IN_ADMIN_PANEL[uid].build_num,
@@ -128,7 +127,7 @@ def admin_message_processing(uid, uname, text):
                 if a is None:
                     vk.send_message_keyboard(uid, cnst.MSG_ADRESS_ERROR, cnst.KEYBOARD_ADMIN)
                 else:
-                    vk.send_message(uid, cnst.MSG_END_ADDING_ADRESS_OR_NOT)
+                    vk.send_message_keyboard(uid, 'Сохранено', cnst.KEYBOARD_ADMIN)
                 IN_ADMIN_PANEL[uid] = ''
 
     elif isinstance(IN_ADMIN_PANEL[uid], m.BcstByTime):
