@@ -127,7 +127,7 @@ def admin_message_processing(uid, uname, text):
                     vk.send_message_keyboard(uid, 'Сохранено', cnst.KEYBOARD_ADMIN)
                 IN_ADMIN_PANEL[uid] = ''
             elif IN_ADMIN_PANEL[uid].build_num is not None:
-                IN_ADMIN_PANEL[uid].build_num += text + cnst.SEPARATOR
+                IN_ADMIN_PANEL[uid].link += text + cnst.SEPARATOR
                 vk.send_message_keyboard(uid, cnst.MSG_ADDING_MORE_ADRESS_OR_NOT, cnst.KEYBOARD_END_AND_CANCELE)
 
     elif isinstance(IN_ADMIN_PANEL[uid], m.BcstByTime):

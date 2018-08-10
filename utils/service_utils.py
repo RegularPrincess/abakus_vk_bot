@@ -165,6 +165,9 @@ def save_adress(name, links):
         return None
 
 
+save_adress('Красной позиции, 2А, Казань', 'https://vk.com/public168998689|')
+
+
 def send_adresses(uid, adresses, need_id=True):
     for a in adresses:
         if need_id:
