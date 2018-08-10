@@ -130,7 +130,6 @@ def admin_message_processing(uid, uname, text):
                 IN_ADMIN_PANEL[uid].build_num += text + cnst.SEPARATOR
                 vk.send_message_keyboard(uid, cnst.MSG_ADDING_MORE_ADRESS_OR_NOT, cnst.KEYBOARD_END_AND_CANCELE)
 
-
     elif isinstance(IN_ADMIN_PANEL[uid], m.BcstByTime):
         if IN_ADMIN_PANEL[uid].date_time_is_not_sign():
             bcst = utils.parse_bcst(text)

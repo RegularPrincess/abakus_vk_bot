@@ -168,6 +168,9 @@ def save_adress(name, links):
 def send_adresses(uid, adresses, need_id=True):
     for a in adresses:
         if need_id:
-            vk.send_message_geo(uid, cnst.MSG_ADRESS_INFO.format(a.id, a.name), a.lat, a.long)
+            msg_links = "Ссылки, связанные с офисом: \n"
+            for l in a.get_links():
+                msg_links += l + '\n'
+            vk.send_message_geo(uid, cnst.MSG_ADRESS_INFO.format(a.id, a.name, msg_links), a.lat, a.long)
         else:
             vk.send_message_geo(uid, a.name, a.lat, a.long)
