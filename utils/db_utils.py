@@ -36,7 +36,7 @@ with sqlite3.connect(config.db_name) as connection:
                 id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
                 reason TEXT NOT NULL )'''
     cursor.execute(sql)
-    cursor.execute("DROP TABLE IF EXISTS adress")
+    # cursor.execute("DROP TABLE IF EXISTS adress")
     sql = '''CREATE TABLE IF NOT EXISTS adress (
             id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
             name TEXT NOT NULL,
