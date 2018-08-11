@@ -250,7 +250,8 @@ def message_processing(uid, text):
                 for l in links:
                     msg_links += '👉 {} \n'.format(l)
                 vk.send_message(uid, msg_links)
-                vk.send_message_keyboard(uid, cnst.MSG_ENROLL_COMPLETED.format(READY_TO_ENROLL[uid].name), cnst.KEYBOARD_USER)
+                msg = db.get_last_msg()
+                vk.send_message_keyboard(uid, msg.format(READY_TO_ENROLL[uid].name), cnst.KEYBOARD_USER)
                 utils.send_message_admins(READY_TO_ENROLL[uid])
                 utils.del_uid_from_dict(uid, READY_TO_ENROLL)
             else:
