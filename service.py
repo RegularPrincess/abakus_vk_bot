@@ -72,7 +72,7 @@ def admin_message_processing(uid, uname, text):
     elif text == cnst.BTN_LAST_MSG:
         IN_ADMIN_PANEL[uid] = cnst.BTN_LAST_MSG
         last_msg = db.get_last_msg()
-        vk.send_message_keyboard(uid, cnst.MSG_LAST_MSG.format(last_msg), cnst.KEYBOARD_CANCEL)
+        vk.send_message_keyboard(uid, cnst.MSG_LAST_MSG.format(last_msg, '{}', '{}'), cnst.KEYBOARD_CANCEL)
 
     elif text.lower() == cnst.CMD_PARSE_GROUP:
         if db.is_admin(uid):
