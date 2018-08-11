@@ -69,6 +69,11 @@ def admin_message_processing(uid, uname, text):
         utils.send_adresses(uid, adresses)
         vk.send_message_keyboard(uid, cnst.MSG_ADRESSES_CHANGE, cnst.KEYBOARD_CANCEL)
 
+    elif text == cnst.BTN_LAST_MSG:
+        IN_ADMIN_PANEL[uid] = cnst.BTN_LAST_MSG
+        last_msg = db.get_last_msg()
+        vk.send_message_keyboard(uid, cnst.MSG_LAST_MSG.format(last_msg), cnst.KEYBOARD_CANCEL)
+
     elif text.lower() == cnst.CMD_PARSE_GROUP:
         if db.is_admin(uid):
             members_count = utils.get_group_count()
@@ -147,6 +152,11 @@ def admin_message_processing(uid, uname, text):
     elif IN_ADMIN_PANEL[uid] == cnst.BTN_BROADCAST:
         count = db.vk_emailing_to_all_subs(text)
         vk.send_message_keyboard(uid, cnst.MSG_BROADCAST_COMPLETED.format(count), cnst.KEYBOARD_ADMIN)
+        IN_ADMIN_PANEL[uid] = ''
+
+    elif IN_ADMIN_PANEL[uid] == cnst.BTN_LAST_MSG:
+        db.update_last_msg(text)
+        vk.send_message_keyboard(uid, cnst.SAVED, cnst.KEYBOARD_ADMIN)
         IN_ADMIN_PANEL[uid] = ''
 
     elif IN_ADMIN_PANEL[uid] == cnst.BTN_ADMINS:

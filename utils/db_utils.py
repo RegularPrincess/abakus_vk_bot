@@ -44,6 +44,11 @@ with sqlite3.connect(config.db_name) as connection:
             long TEXT,
             link TEXT)'''
     cursor.execute(sql)
+    sql = '''CREATE TABLE IF NOT EXISTS last_msg (
+                id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+                msg TEXT NOT NULL UNIQUE)'''
+    cursor.execute(sql)
+    cursor.execute("INSERT OR IGNORE INTO last_msg(msg) VALUES ({})".format(cnst.MSG_ENROLL_COMPLETED))
     sql = '''CREATE INDEX IF NOT EXISTS uid_known_users ON known_users (uid)'''
     cursor.execute(sql)
     # Add base admins to bot
@@ -343,3 +348,22 @@ def get_adress_by_name(name):
         adress = m.Adress(x[1], x[2], x[3], x[4], x[0])
         connection.commit()
         return adress
+
+
+def update_last_msg(msg):
+    with sqlite3.connect(config.db_name) as connection:
+        cursor = connection.cursor()
+        sql = '''DELETE FROM last_msg'''
+        cursor.execute(sql)
+        sql = '''INSERT INTO last_msg (msg) VALUES (?)'''
+        cursor.execute(sql, (msg, ))
+        connection.commit()
+
+
+def get_last_msg():
+    with sqlite3.connect(config.db_name) as connection:
+        cursor = connection.cursor()
+        sql = '''SELECT * FROM last_msg'''
+        res = cursor.execute(sql).fetchone()
+        print(res[1])
+        return res[1]
