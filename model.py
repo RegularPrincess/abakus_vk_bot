@@ -84,7 +84,7 @@ class BcstByTime:
 
 
 class Adress:
-    def __init__(self, name=None, lat=None, long='', link=None, id=0):
+    def __init__(self, name=None, lat=None, long=None, link="", id=0):
         self.name = name
         self.lat = lat
         self.long = long
