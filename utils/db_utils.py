@@ -48,6 +48,8 @@ with sqlite3.connect(config.db_name) as connection:
                 id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
                 msg TEXT NOT NULL UNIQUE)'''
     cursor.execute(sql)
+
+
     sql = "INSERT OR IGNORE INTO last_msg(msg) VALUES ('{!s}')".format(cnst.MSG_ENROLL_COMPLETED)
     cursor.execute(sql)
     sql = '''CREATE INDEX IF NOT EXISTS uid_known_users ON known_users (uid)'''
