@@ -163,7 +163,7 @@ def send_data_to_uon(data, uid):
         'source': 'Бот вконтакте',
         'u_phone': data.number,
         'u_email': data.email,
-        'u_social_vk': ('id' + uid),
+        'u_social_vk': ('id' + str(uid)),
         'u_note': note
     }
 
