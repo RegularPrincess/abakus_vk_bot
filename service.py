@@ -178,11 +178,24 @@ def message_processing(uid, text):
         elif not READY_TO_ENROLL[uid].number_is_sign():
             if utils.is_number_valid(text):
                 READY_TO_ENROLL[uid].set_number(text)
-                vk.send_message_keyboard(uid, cnst.MSG_ENROLL_COMPLETED.format(READY_TO_ENROLL[uid].name), cnst.KEYBOARD_USER)
-                utils.send_message_admins(READY_TO_ENROLL[uid])
-                utils.del_uid_from_dict(uid, READY_TO_ENROLL)
+                vk.send_message(uid, 'Спасибо, теперь напишите ваши пожелания о месте отдыха.')
             else:
                 vk.send_message(uid, cnst.MSG_UNCORECT_NUMBER)
+        elif READY_TO_ENROLL[uid].where is None:
+            READY_TO_ENROLL[uid].where = text
+            vk.send_message(uid,
+                            'Спасибо, в каком составе планируется поездка (взросдые\дети)?')
+        elif READY_TO_ENROLL[uid].who is None:
+            READY_TO_ENROLL[uid].who = text
+            vk.send_message(uid, 'Спасибо, какие даты вы рассматривайте?')
+
+        elif READY_TO_ENROLL[uid].when is None:
+            READY_TO_ENROLL[uid].when = text
+            vk.send_message(uid, 'Спасибо, на какую стоимость тура на человека вы расчитывайте?')
+            vk.send_message_keyboard(uid, cnst.MSG_ENROLL_COMPLETED.format(READY_TO_ENROLL[uid].name), cnst.KEYBOARD_USER)
+            utils.send_message_admins(READY_TO_ENROLL[uid])
+            utils.del_uid_from_dict(uid, READY_TO_ENROLL)
+
 
     elif uid in READY_TO_LEAVE:
         vk.send_message_keyboard(uid, cnst.MSG_THANK_YOU, cnst.KEYBOARD_USER)

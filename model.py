@@ -29,6 +29,11 @@ class EnrollInfo:
         self.name = None
         self.email = None
         self.number = None
+        self.where = None
+        self.who = None
+        self.when = None
+        self.budget = None
+
 
     def name_is_sign(self):
         return self.name is not None
