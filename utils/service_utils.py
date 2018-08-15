@@ -74,7 +74,9 @@ def del_uid_from_dict(uid, dict_):
 
 def send_message_admins(info):
     admins = db.get_list_bot_admins()
-    vk.send_message_much(admins, cnst.NOTIFY_ADMIN.format(info.uid, info.name, info.email, info.number))
+    note = 'Куда: {}\nКто: {}\nКогда: {}\nБюджет на человека: {}\n '. \
+        format(info.where, info.who, info.when, info.budget)
+    vk.send_message_much(admins, cnst.NOTIFY_ADMIN.format(info.uid, info.name, info.email, info.number, note))
 
 
 def send_message_admins_after_restart():
