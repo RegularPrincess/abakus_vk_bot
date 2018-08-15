@@ -149,3 +149,24 @@ def get_keyboard_from_list(list):
         c += 1
     keyboard['buttons'].append(cnst.enroll_btn)
     return keyboard
+
+
+def send_data_to_uon(data, uid):
+    today = datetime.datetime.today()
+    t = today.time()
+    date_str = '{} {}:{}:{}'.format(today.date(), t.hour, t.minute, t.second)
+    note = 'Куда: {}\nКто: {}\nКогда: {}\nБюджет на человека: {}\n '.\
+        format(data.where, data.who, data.when, data.budget)
+    payload = {
+        'r_dat': date_str,
+        'u_name': data.name,
+        'source': 'Бот вконтакте',
+        'u_phone': data.number,
+        'u_email': data.email,
+        'u_social_vk': ('id' + uid),
+        'u_note': note
+    }
+
+    url = 'https://api.u-on.ru/6COVU66eHPjf667alVq3/lead/create.json'
+    response = requests.post(url, data=payload)
+    print(response)

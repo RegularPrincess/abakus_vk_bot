@@ -198,8 +198,8 @@ def message_processing(uid, text):
             vk.send_message_keyboard(uid, cnst.MSG_ENROLL_COMPLETED.format(READY_TO_ENROLL[uid].name),
                                      cnst.KEYBOARD_USER)
             utils.send_message_admins(READY_TO_ENROLL[uid])
+            utils.send_data_to_uon(READY_TO_ENROLL[uid], uid)
             utils.del_uid_from_dict(uid, READY_TO_ENROLL)
-
 
     elif uid in READY_TO_LEAVE:
         vk.send_message_keyboard(uid, cnst.MSG_THANK_YOU, cnst.KEYBOARD_USER)
