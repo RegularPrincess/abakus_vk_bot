@@ -158,7 +158,8 @@ def message_processing(uid, text):
 
     elif text == cnst.BTN_ENROLL or (text.lower() in cnst.USER_ACCEPT_WORDS and not_ready_to_enroll(uid)):
         READY_TO_ENROLL[uid] = m.EnrollInfo(uid)
-        vk.send_message_keyboard(uid, cnst.MSG_ACCEPT_NAME, cnst.KEYBOARD_CANCEL)
+        READY_TO_ENROLL[uid].set_name(uname)
+        vk.send_message_keyboard(uid, cnst.MSG_ACCEPT_EMAIL, cnst.KEYBOARD_CANCEL)
 
     elif text == cnst.BTN_CANCEL:
         utils.del_uid_from_dict(uid, READY_TO_ENROLL)
@@ -166,10 +167,7 @@ def message_processing(uid, text):
 
     # Обработка ввода данных пользователя
     elif uid in READY_TO_ENROLL:
-        if not READY_TO_ENROLL[uid].name_is_sign():
-            READY_TO_ENROLL[uid].set_name(text)
-            vk.send_message(uid, cnst.MSG_ACCEPT_EMAIL)
-        elif not READY_TO_ENROLL[uid].email_is_sign():
+        if not READY_TO_ENROLL[uid].email_is_sign():
             if utils.is_email_valid(text):
                 READY_TO_ENROLL[uid].set_email(text)
                 vk.send_message(uid, cnst.MSG_ACCEPT_NUMBER)
