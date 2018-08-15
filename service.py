@@ -192,9 +192,7 @@ def message_processing(uid, text):
         elif READY_TO_ENROLL[uid].when is None:
             READY_TO_ENROLL[uid].when = text
             vk.send_message(uid, 'Спасибо, на какую стоимость тура на человека вы расчитывайте?')
-            vk.send_message_keyboard(uid, cnst.MSG_ENROLL_COMPLETED.format(READY_TO_ENROLL[uid].name), cnst.KEYBOARD_USER)
-            utils.send_message_admins(READY_TO_ENROLL[uid])
-            utils.del_uid_from_dict(uid, READY_TO_ENROLL)
+
         elif READY_TO_ENROLL[uid].budget is None:
             READY_TO_ENROLL[uid].budget = text
             vk.send_message_keyboard(uid, cnst.MSG_ENROLL_COMPLETED.format(READY_TO_ENROLL[uid].name),
