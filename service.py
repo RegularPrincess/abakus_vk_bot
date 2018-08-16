@@ -159,7 +159,7 @@ def message_processing(uid, text):
     elif text == cnst.BTN_ENROLL or (text.lower() in cnst.USER_ACCEPT_WORDS and not_ready_to_enroll(uid)):
         READY_TO_ENROLL[uid] = m.EnrollInfo(uid)
         READY_TO_ENROLL[uid].set_name(uname)
-        vk.send_message_keyboard(uid, cnst.MSG_ACCEPT_EMAIL, cnst.KEYBOARD_CANCEL)
+        vk.send_message_keyboard(uid, 'Напишите ваши пожелания о месте отдыха.', cnst.KEYBOARD_CANCEL)
 
     elif text == cnst.BTN_CANCEL:
         utils.del_uid_from_dict(uid, READY_TO_ENROLL)
@@ -167,19 +167,7 @@ def message_processing(uid, text):
 
     # Обработка ввода данных пользователя
     elif uid in READY_TO_ENROLL:
-        if not READY_TO_ENROLL[uid].email_is_sign():
-            if utils.is_email_valid(text):
-                READY_TO_ENROLL[uid].set_email(text)
-                vk.send_message(uid, cnst.MSG_ACCEPT_NUMBER)
-            else:
-                vk.send_message(uid, cnst.MSG_UNCORECT_EMAIL)
-        elif not READY_TO_ENROLL[uid].number_is_sign():
-            if utils.is_number_valid(text):
-                READY_TO_ENROLL[uid].set_number(text)
-                vk.send_message(uid, 'Спасибо, теперь напишите ваши пожелания о месте отдыха.')
-            else:
-                vk.send_message(uid, cnst.MSG_UNCORECT_NUMBER)
-        elif READY_TO_ENROLL[uid].where is None:
+        if READY_TO_ENROLL[uid].where is None:
             READY_TO_ENROLL[uid].where = text
             vk.send_message(uid,
                             'Спасибо, в каком составе планируется поездка (взросдые\дети)?')
@@ -193,11 +181,24 @@ def message_processing(uid, text):
 
         elif READY_TO_ENROLL[uid].budget is None:
             READY_TO_ENROLL[uid].budget = text
-            vk.send_message_keyboard(uid, cnst.MSG_ENROLL_COMPLETED.format(READY_TO_ENROLL[uid].name),
-                                     cnst.KEYBOARD_USER)
-            utils.send_message_admins(READY_TO_ENROLL[uid])
-            utils.send_data_to_uon(READY_TO_ENROLL[uid], uid)
-            utils.del_uid_from_dict(uid, READY_TO_ENROLL)
+            vk.send_message(uid, cnst.MSG_ACCEPT_EMAIL)
+        if not READY_TO_ENROLL[uid].email_is_sign():
+            if utils.is_email_valid(text):
+                READY_TO_ENROLL[uid].set_email(text)
+                vk.send_message(uid, cnst.MSG_ACCEPT_NUMBER)
+            else:
+                vk.send_message(uid, cnst.MSG_UNCORECT_EMAIL)
+        elif not READY_TO_ENROLL[uid].number_is_sign():
+            if utils.is_number_valid(text):
+                READY_TO_ENROLL[uid].set_number(text)
+                vk.send_message_keyboard(uid, cnst.MSG_ENROLL_COMPLETED.format(READY_TO_ENROLL[uid].name),
+                                         cnst.KEYBOARD_USER)
+                utils.send_message_admins(READY_TO_ENROLL[uid])
+                utils.send_data_to_uon(READY_TO_ENROLL[uid], uid)
+                READY_TO_ENROLL[uid] = None
+                utils.del_uid_from_dict(uid, READY_TO_ENROLL)
+            else:
+                vk.send_message(uid, cnst.MSG_UNCORECT_NUMBER)
 
     elif uid in READY_TO_LEAVE:
         vk.send_message_keyboard(uid, cnst.MSG_THANK_YOU, cnst.KEYBOARD_USER)
