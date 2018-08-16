@@ -161,6 +161,7 @@ def send_data_to_uon(data, uid):
         format(data.where, data.who, data.when, data.budget)
     payload = {
         'r_dat': date_str,
+        'r_u_id': '3835',
         'u_name': data.name,
         'source': 'Бот вконтакте',
         'u_phone': data.number,
