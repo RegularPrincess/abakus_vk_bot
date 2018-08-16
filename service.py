@@ -182,7 +182,7 @@ def message_processing(uid, text):
         elif READY_TO_ENROLL[uid].budget is None:
             READY_TO_ENROLL[uid].budget = text
             vk.send_message(uid, cnst.MSG_ACCEPT_EMAIL)
-        if not READY_TO_ENROLL[uid].email_is_sign():
+        elif not READY_TO_ENROLL[uid].email_is_sign():
             if utils.is_email_valid(text):
                 READY_TO_ENROLL[uid].set_email(text)
                 vk.send_message(uid, cnst.MSG_ACCEPT_NUMBER)
