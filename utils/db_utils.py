@@ -312,7 +312,7 @@ def get_quest_msgs():
         res = cursor.execute(sql).fetchall()
         print(res)
         for x in res:
-            item = m.QuestMsg(x[0], x[1], x[3])
+            item = m.QuestMsg(x[0], x[1], x[2])
             arr.append(item)
         connection.commit()
     return arr
