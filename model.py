@@ -89,4 +89,4 @@ class QuestMsg:
     def __init__(self, id=None, quest=None, answs=None):
         self.id = id
         self.quest = quest
-        self.asws = answs
+        self.answs = answs
