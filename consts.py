@@ -15,6 +15,7 @@ BTN_BROADCAST_BY_TIME = 'Запланированные рассылки'
 BTN_LEAVE_REASON = 'Причины отписки'
 BTN_QUESTIONS = 'Вопросы пользователю'
 BTN_END = 'Закончить'
+BTN_SKIP = 'Пропустить'
 
 START_WORDS = ['start', 'начать', 'старт']
 USER_ACCEPT_WORDS = ['да', 'конечно', 'хочу']
@@ -114,6 +115,15 @@ enroll_btn = [{
     "color": "positive"
 }]
 
+cancel_btn = [{
+    "action": {
+        "type": "text",
+        "payload": "{\"button\": \"1\"}",
+        "label": BTN_CANCEL
+    },
+    "color": "positive"
+}]
+
 keyboard_pattern = \
     {
         "one_time": False,
@@ -158,6 +168,28 @@ KEYBOARD_END_AND_CANCELE = {
                 "type": "text",
                 "payload": "{\"button\": \"1\"}",
                 "label": BTN_END
+            },
+            "color": "default"
+        }],
+        [{
+            "action": {
+                "type": "text",
+                "payload": "{\"button\": \"1\"}",
+                "label": BTN_CANCEL
+            },
+            "color": "default"
+        }]
+    ]
+}
+
+KEYBOARD_END_AND_SKIP = {
+    "one_time": False,
+    "buttons": [
+        [{
+            "action": {
+                "type": "text",
+                "payload": "{\"button\": \"1\"}",
+                "label": BTN_SKIP
             },
             "color": "default"
         }],

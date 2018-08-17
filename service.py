@@ -194,12 +194,12 @@ def message_processing(uid, text):
             q = READY_TO_ENROLL[uid].quests.pop(0)
             if len(q.answs) > 0:
                 answrs = q.answs.split('; ')
-                k = utils.get_keyboard_from_list(answrs)
+                k = utils.get_keyboard_from_list(answrs, cnst.cancel_btn)
             else:
                 k = cnst.KEYBOARD_CANCEL
             vk.send_message_keyboard(uid, q.quest, k)
         else:
-            vk.send_message_keyboard(uid, cnst.MSG_ACCEPT_EMAIL, cnst.KEYBOARD_CANCEL)
+            vk.send_message_keyboard(uid, cnst.MSG_ACCEPT_EMAIL, cnst.KEYBOARD_END_AND_SKIP)
             READY_TO_ENROLL[uid].quests.pop(0)
 
     elif text == cnst.BTN_CANCEL:
@@ -211,7 +211,7 @@ def message_processing(uid, text):
         if len(READY_TO_ENROLL[uid].quests) > 0:
             if len(READY_TO_ENROLL[uid].quests) == 1:
                 READY_TO_ENROLL[uid].answers.append(text)
-                vk.send_message(uid, cnst.MSG_ACCEPT_EMAIL)
+                vk.send_message_keyboard(uid, cnst.MSG_ACCEPT_EMAIL, cnst.KEYBOARD_END_AND_SKIP)
                 READY_TO_ENROLL[uid].quests.pop(0)
             else:
                 k = None
@@ -219,7 +219,7 @@ def message_processing(uid, text):
                 q = READY_TO_ENROLL[uid].quests.pop(0)
                 if len(q.answs) > 0:
                     answrs = q.answs.split('; ')
-                    k = utils.get_keyboard_from_list(answrs)
+                    k = utils.get_keyboard_from_list(answrs, cnst.cancel_btn)
                 else:
                     k = cnst.KEYBOARD_CANCEL
                 vk.send_message_keyboard(uid, q.quest, k)
@@ -228,7 +228,11 @@ def message_processing(uid, text):
                 READY_TO_ENROLL[uid].set_email(text)
                 vk.send_message(uid, cnst.MSG_ACCEPT_NUMBER)
             else:
-                vk.send_message(uid, cnst.MSG_UNCORECT_EMAIL)
+                if text == cnst.BTN_SKIP:
+                    READY_TO_ENROLL[uid].set_email('')
+                    vk.send_message(uid, cnst.MSG_ACCEPT_NUMBER)
+                else:
+                    vk.send_message(uid, cnst.MSG_UNCORECT_EMAIL)
         elif not READY_TO_ENROLL[uid].number_is_sign():
             if utils.is_number_valid(text):
                 READY_TO_ENROLL[uid].set_number(text)
