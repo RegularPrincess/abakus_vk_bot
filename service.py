@@ -182,6 +182,7 @@ def message_processing(uid, text):
             vk.send_message_keyboard(uid, READY_TO_ENROLL[uid].quests.pop(0).quest, cnst.KEYBOARD_CANCEL)
         else:
             vk.send_message_keyboard(uid, cnst.MSG_ACCEPT_EMAIL, cnst.KEYBOARD_CANCEL)
+            READY_TO_ENROLL[uid].quests.pop(0)
 
     elif text == cnst.BTN_CANCEL:
         utils.del_uid_from_dict(uid, READY_TO_ENROLL)

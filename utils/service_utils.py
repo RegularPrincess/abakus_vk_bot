@@ -178,5 +178,5 @@ def getquest_msgs_as_str():
     str = ''
     str = ''
     for q in quests:
-        str += '(ID-{}) {}'.format(q.id, q.quest)
+        str += '(ID-{}) {}\n'.format(q.id, q.quest)
     return str
