@@ -196,7 +196,7 @@ def message_processing(uid, text):
                 READY_TO_ENROLL[uid].quests.pop(0)
             else:
                 READY_TO_ENROLL[uid].answers.append(text)
-                vk.send_message(uid, READY_TO_ENROLL[uid].quests.pop(0))
+                vk.send_message(uid, READY_TO_ENROLL[uid].quests.pop(0).quest)
         elif not READY_TO_ENROLL[uid].email_is_sign():
             if utils.is_email_valid(text):
                 READY_TO_ENROLL[uid].set_email(text)

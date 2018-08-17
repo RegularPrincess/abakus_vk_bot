@@ -79,11 +79,11 @@ class BcstByTime:
     def date_time_is_not_sign(self):
         return self.start_date is None or self.time is None or self.repet_days is None
 
-
-class QuestMsgs:
-    def __init__(self):
-        self.quests = []
-
+#
+# class QuestMsgs:
+#     def __init__(self):
+#         self.quests = []
+#
 
 class QuestMsg:
     def __init__(self, id=None, quest=None):
