@@ -118,7 +118,7 @@ def admin_message_processing(uid, uname, text):
                 IN_ADMIN_PANEL[uid].quest = text
                 vk.send_message_keyboard(uid, cnst.MSG_ADDING_ANSWS_VAR, cnst.KEYBOARD_END_AND_CANCELE)
             elif text == cnst.BTN_END:
-                db.add_quest_msg(text, '')
+                db.add_quest_msg(IN_ADMIN_PANEL[uid].quest, '')
                 vk.send_message_keyboard(uid, "Добавлено", cnst.KEYBOARD_ADMIN)
                 IN_ADMIN_PANEL[uid] = ''
             else:
@@ -191,12 +191,13 @@ def message_processing(uid, text):
         READY_TO_ENROLL[uid].set_name(uname)
         k = None
         if len(READY_TO_ENROLL[uid].quests) > 1:
-            if len(READY_TO_ENROLL[uid].quests.pop(0).answs) > 0:
-                answrs = READY_TO_ENROLL[uid].quests.pop(0).answs.split('; ')
+            q = READY_TO_ENROLL[uid].quests.pop(0)
+            if len(q.answs) > 0:
+                answrs = q.answs.split('; ')
                 k = utils.get_keyboard_from_list(answrs)
             else:
                 k = cnst.KEYBOARD_CANCEL
-            vk.send_message_keyboard(uid, READY_TO_ENROLL[uid].quests.pop(0).quest, k)
+            vk.send_message_keyboard(uid, q.quest, k)
         else:
             vk.send_message_keyboard(uid, cnst.MSG_ACCEPT_EMAIL, cnst.KEYBOARD_CANCEL)
             READY_TO_ENROLL[uid].quests.pop(0)
@@ -215,12 +216,13 @@ def message_processing(uid, text):
             else:
                 k = None
                 READY_TO_ENROLL[uid].answers.append(text)
-                if len(READY_TO_ENROLL[uid].quests.pop(0).answs) > 0:
-                    answrs = READY_TO_ENROLL[uid].quests.pop(0).answs.split('; ')
+                q = READY_TO_ENROLL[uid].quests.pop(0)
+                if len(q.answs) > 0:
+                    answrs = q.answs.split('; ')
                     k = utils.get_keyboard_from_list(answrs)
                 else:
                     k = cnst.KEYBOARD_CANCEL
-                vk.send_message_keyboard(uid, READY_TO_ENROLL[uid].quests.pop(0).quest, k)
+                vk.send_message_keyboard(uid, q.quest, k)
         elif not READY_TO_ENROLL[uid].email_is_sign():
             if utils.is_email_valid(text):
                 READY_TO_ENROLL[uid].set_email(text)
