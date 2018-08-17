@@ -179,7 +179,7 @@ def message_processing(uid, text):
         READY_TO_ENROLL[uid].quests = quests
         READY_TO_ENROLL[uid].set_name(uname)
         if len(READY_TO_ENROLL[uid].quests) > 1:
-            vk.send_message_keyboard(uid, READY_TO_ENROLL[uid].quests.pop(0), cnst.KEYBOARD_CANCEL)
+            vk.send_message_keyboard(uid, READY_TO_ENROLL[uid].quests.pop(0).quest, cnst.KEYBOARD_CANCEL)
         else:
             vk.send_message_keyboard(uid, cnst.MSG_ACCEPT_EMAIL, cnst.KEYBOARD_CANCEL)
 
