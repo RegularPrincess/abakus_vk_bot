@@ -121,7 +121,7 @@ cancel_btn = [{
         "payload": "{\"button\": \"1\"}",
         "label": BTN_CANCEL
     },
-    "color": "positive"
+    "color": "default"
 }]
 
 keyboard_pattern = \

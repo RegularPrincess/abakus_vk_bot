@@ -226,11 +226,11 @@ def message_processing(uid, text):
         elif not READY_TO_ENROLL[uid].email_is_sign():
             if utils.is_email_valid(text):
                 READY_TO_ENROLL[uid].set_email(text)
-                vk.send_message(uid, cnst.MSG_ACCEPT_NUMBER)
+                vk.send_message_keyboard(uid, cnst.MSG_ACCEPT_NUMBER, cnst.KEYBOARD_CANCEL)
             else:
                 if text == cnst.BTN_SKIP:
                     READY_TO_ENROLL[uid].set_email('')
-                    vk.send_message(uid, cnst.MSG_ACCEPT_NUMBER)
+                    vk.send_message_keyboard(uid, cnst.MSG_ACCEPT_NUMBER, cnst.KEYBOARD_CANCEL)
                 else:
                     vk.send_message(uid, cnst.MSG_UNCORECT_EMAIL)
         elif not READY_TO_ENROLL[uid].number_is_sign():
