@@ -193,6 +193,7 @@ def message_processing(uid, text):
             if len(READY_TO_ENROLL[uid].quests) == 1:
                 READY_TO_ENROLL[uid].answers.append(text)
                 vk.send_message(uid, cnst.MSG_ACCEPT_EMAIL)
+                READY_TO_ENROLL[uid].quests.pop(0)
             else:
                 READY_TO_ENROLL[uid].answers.append(text)
                 vk.send_message(uid, READY_TO_ENROLL[uid].quests.pop(0))
