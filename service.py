@@ -62,6 +62,12 @@ def admin_message_processing(uid, uname, text):
         msg += 'Для удаления рассылки введите её id.'
         vk.send_message_keyboard(uid, msg, cnst.KEYBOARD_CANCEL)
 
+    elif text == cnst.BTN_QUESTIONS:
+        IN_ADMIN_PANEL[uid] = m.QuestMsg()
+        msg = utils.getquest_msgs_as_str()
+        vk.send_message(uid, msg)
+        vk.send_message_keyboard(uid, cnst.MSG_ACCEPT_QUEST_MSG, cnst.KEYBOARD_CANCEL)
+
     elif text.lower() == cnst.CMD_PARSE_GROUP:
         if db.is_admin(uid):
             members_count = utils.get_group_count()
@@ -98,6 +104,16 @@ def admin_message_processing(uid, uname, text):
             vk.send_message_keyboard(uid, 'Рассылка создана!', cnst.KEYBOARD_ADMIN)
             thread_manager.add_brcst_thread(IN_ADMIN_PANEL[uid])
             IN_ADMIN_PANEL[uid] = None
+
+    elif isinstance(IN_ADMIN_PANEL[uid], m.QuestMsg):
+        try:
+            qid = int(text)
+            db.delete_quest_msg(qid)
+            vk.send_message_keyboard(uid, "Удалено", cnst.KEYBOARD_ADMIN)
+            IN_ADMIN_PANEL[uid] = ''
+        except ValueError:
+            db.add_quest_msg(text)
+            vk.send_message_keyboard(uid, "Добавлено", cnst.KEYBOARD_ADMIN)
 
     elif IN_ADMIN_PANEL[uid] == cnst.BTN_BROADCAST:
         count = db.vk_emailing_to_all_subs(text)
@@ -158,8 +174,14 @@ def message_processing(uid, text):
 
     elif text == cnst.BTN_ENROLL or (text.lower() in cnst.USER_ACCEPT_WORDS and not_ready_to_enroll(uid)):
         READY_TO_ENROLL[uid] = m.EnrollInfo(uid)
+        quests = db.get_quest_msgs()
+        quests.append('FAKE')
+        READY_TO_ENROLL[uid].quests = quests
         READY_TO_ENROLL[uid].set_name(uname)
-        vk.send_message_keyboard(uid, 'Напишите ваши пожелания о месте отдыха.', cnst.KEYBOARD_CANCEL)
+        if len(READY_TO_ENROLL[uid].quests) > 0:
+            vk.send_message_keyboard(uid, READY_TO_ENROLL[uid].quests.pop(0), cnst.KEYBOARD_CANCEL)
+        else:
+            vk.send_message_keyboard(uid, cnst.MSG_ACCEPT_EMAIL, cnst.KEYBOARD_CANCEL)
 
     elif text == cnst.BTN_CANCEL:
         utils.del_uid_from_dict(uid, READY_TO_ENROLL)
@@ -167,21 +189,13 @@ def message_processing(uid, text):
 
     # Обработка ввода данных пользователя
     elif uid in READY_TO_ENROLL:
-        if READY_TO_ENROLL[uid].where is None:
-            READY_TO_ENROLL[uid].where = text
-            vk.send_message(uid,
-                            'Спасибо, в каком составе планируется поездка (взросдые\дети)?')
-        elif READY_TO_ENROLL[uid].who is None:
-            READY_TO_ENROLL[uid].who = text
-            vk.send_message(uid, 'Спасибо, какие даты вы рассматривайте?')
-
-        elif READY_TO_ENROLL[uid].when is None:
-            READY_TO_ENROLL[uid].when = text
-            vk.send_message(uid, 'Спасибо, на какую стоимость тура на человека вы расчитывайте?')
-
-        elif READY_TO_ENROLL[uid].budget is None:
-            READY_TO_ENROLL[uid].budget = text
-            vk.send_message(uid, cnst.MSG_ACCEPT_EMAIL)
+        if len(READY_TO_ENROLL[uid].quests) > 0:
+            if len(READY_TO_ENROLL[uid].quests) == 1:
+                READY_TO_ENROLL[uid].answers.append(text)
+                vk.send_message(uid, cnst.MSG_ACCEPT_EMAIL)
+            else:
+                READY_TO_ENROLL[uid].answers.append(text)
+                vk.send_message(uid, READY_TO_ENROLL[uid].quests.pop(0))
         elif not READY_TO_ENROLL[uid].email_is_sign():
             if utils.is_email_valid(text):
                 READY_TO_ENROLL[uid].set_email(text)

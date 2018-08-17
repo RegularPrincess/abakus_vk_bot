@@ -36,6 +36,10 @@ with sqlite3.connect(config.db_name) as connection:
                 id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
                 reason TEXT NOT NULL )'''
     cursor.execute(sql)
+    sql = '''CREATE TABLE IF NOT EXISTS quest_msg (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+                    quest TEXT NOT NULL )'''
+    cursor.execute(sql)
     sql = '''CREATE INDEX IF NOT EXISTS uid_known_users ON known_users (uid)'''
     cursor.execute(sql)
     # Add base admins to bot
@@ -277,6 +281,36 @@ def get_leave_reasons():
         print(res)
         for x in res:
             item = x[1]
+            arr.append(item)
+        connection.commit()
+    return arr
+
+
+def add_quest_msg(quest):
+    with sqlite3.connect(config.db_name) as connection:
+        cursor = connection.cursor()
+        sql = '''INSERT OR IGNORE INTO quest_msg (quest) VALUES (?)'''
+        cursor.execute(sql, (quest,))
+        connection.commit()
+
+
+def delete_quest_msg(id):
+    with sqlite3.connect(config.db_name) as connection:
+        cursor = connection.cursor()
+        sql = '''DELETE FROM quest_msg WHERE id=?'''
+        cursor.execute(sql, (id,))
+        connection.commit()
+
+
+def get_quest_msgs():
+    arr = []
+    with sqlite3.connect(config.db_name) as connection:
+        cursor = connection.cursor()
+        sql = '''SELECT * FROM quest_msg'''
+        res = cursor.execute(sql).fetchall()
+        print(res)
+        for x in res:
+            item = m.QuestMsg(x[0], x[1])
             arr.append(item)
         connection.commit()
     return arr

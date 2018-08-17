@@ -74,8 +74,7 @@ def del_uid_from_dict(uid, dict_):
 
 def send_message_admins(info):
     admins = db.get_list_bot_admins()
-    note = 'Куда: {}\nКто: {}\nКогда: {}\nБюджет на человека: {}\n '. \
-        format(info.where, info.who, info.when, info.budget)
+    note = 'Примечания : {}'.format("\n".join(info.answers))
     vk.send_message_much(admins, cnst.NOTIFY_ADMIN.format(info.uid, info.name, info.email, info.number, note))
 
 
@@ -157,8 +156,7 @@ def send_data_to_uon(data, uid):
     today = datetime.datetime.today()
     t = today.time()
     date_str = '{} {}:{}:{}'.format(today.date(), t.hour, t.minute, t.second)
-    note = 'Куда: {}\nКто: {}\nКогда: {}\nБюджет на человека: {}\n '.\
-        format(data.where, data.who, data.when, data.budget)
+    note = 'Примечания : {}'.format("\n".join(data.answers))
     payload = {
         'r_dat': date_str,
         'r_u_id': '3835',
@@ -173,3 +171,12 @@ def send_data_to_uon(data, uid):
     url = 'https://api.u-on.ru/6COVU66eHPjf667alVq3/lead/create.json'
     response = requests.post(url, data=payload)
     print(response)
+
+
+def getquest_msgs_as_str():
+    quests = db.get_quest_msgs()
+    str = ''
+    str = ''
+    for q in quests:
+        str += '(ID-{}) {}'.format(q.id, q.quest)
+    return str
