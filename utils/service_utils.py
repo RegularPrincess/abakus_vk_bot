@@ -176,9 +176,11 @@ def send_data_to_uon(data, uid):
 def getquest_msgs_as_str():
     quests = db.get_quest_msgs()
     str = ''
-    str = ''
     if len(quests) == 0:
         str = '<Еще нет ни одного вопроса кроме вопросов о телефоне и email, которые есть всегда>'
     for q in quests:
-        str += '(ID-{}) {}\n'.format(q.id, q.quest)
+        if len(q.answs) > 0:
+            str += '(ID-{}) {} \n(Варианты ответа: {})\n\n'.format(q.id, q.quest, q.answs)
+        else:
+            str += '(ID-{}) {} \n\n'.format(q.id, q.quest)
     return str

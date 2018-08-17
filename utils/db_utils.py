@@ -38,7 +38,8 @@ with sqlite3.connect(config.db_name) as connection:
     cursor.execute(sql)
     sql = '''CREATE TABLE IF NOT EXISTS quest_msg (
                     id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-                    quest TEXT NOT NULL )'''
+                    quest TEXT NOT NULL,
+                    answs TEXT NOT NULL)'''
     cursor.execute(sql)
     sql = '''CREATE INDEX IF NOT EXISTS uid_known_users ON known_users (uid)'''
     cursor.execute(sql)
@@ -286,11 +287,11 @@ def get_leave_reasons():
     return arr
 
 
-def add_quest_msg(quest):
+def add_quest_msg(quest, answs):
     with sqlite3.connect(config.db_name) as connection:
         cursor = connection.cursor()
-        sql = '''INSERT OR IGNORE INTO quest_msg (quest) VALUES (?)'''
-        cursor.execute(sql, (quest,))
+        sql = '''INSERT OR IGNORE INTO quest_msg (quest, answs) VALUES (?, ?)'''
+        cursor.execute(sql, (quest, answs))
         connection.commit()
 
 
@@ -310,7 +311,7 @@ def get_quest_msgs():
         res = cursor.execute(sql).fetchall()
         print(res)
         for x in res:
-            item = m.QuestMsg(x[0], x[1])
+            item = m.QuestMsg(x[0], x[1], x[3])
             arr.append(item)
         connection.commit()
     return arr

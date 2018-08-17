@@ -86,6 +86,7 @@ class BcstByTime:
 #
 
 class QuestMsg:
-    def __init__(self, id=None, quest=None):
+    def __init__(self, id=None, quest=None, answs=None):
         self.id = id
         self.quest = quest
+        self.asws = answs
