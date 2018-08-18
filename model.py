@@ -36,7 +36,6 @@ class EnrollInfo:
         self.quests = None
         self.answers = []
 
-
     def name_is_sign(self):
         return self.name is not None
 

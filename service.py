@@ -203,6 +203,12 @@ def message_processing(uid, text):
             READY_TO_ENROLL[uid].quests.pop(0)
 
     elif text == cnst.BTN_CANCEL:
+        if uid in READY_TO_ENROLL:
+            READY_TO_ENROLL[uid].answers.clear()
+            READY_TO_ENROLL[uid].answers.append('Пользователь не завершил процедуру.')
+            READY_TO_ENROLL[uid].number = ''
+            READY_TO_ENROLL[uid].email = ''
+            utils.send_data_to_uon(READY_TO_ENROLL[uid], uid)
         utils.del_uid_from_dict(uid, READY_TO_ENROLL)
         vk.send_message_keyboard(uid, cnst.MSG_CANCELED_MESSAGE, cnst.KEYBOARD_USER)
 
