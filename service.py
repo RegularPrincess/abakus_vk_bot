@@ -125,11 +125,11 @@ def admin_message_processing(uid, uname, text):
                 vk.send_message_keyboard(uid, cnst.MSG_ADDING_ANSWS_VAR, cnst.KEYBOARD_END_AND_CANCELE)
             elif text == cnst.BTN_END:
                 db.add_quest_msg(IN_ADMIN_PANEL[uid].quest, '', IN_ADMIN_PANEL[uid].id)
-                vk.send_message_keyboard(uid, "Добавлено", cnst.KEYBOARD_ADMIN)
+                vk.send_message_keyboard(uid, "Сохранено", cnst.KEYBOARD_ADMIN)
                 IN_ADMIN_PANEL[uid] = ''
             else:
                 db.add_quest_msg(IN_ADMIN_PANEL[uid].quest, text, IN_ADMIN_PANEL[uid].id)
-                vk.send_message_keyboard(uid, "Добавлено", cnst.KEYBOARD_ADMIN)
+                vk.send_message_keyboard(uid, "Сохранено", cnst.KEYBOARD_ADMIN)
                 IN_ADMIN_PANEL[uid] = ''
 
     elif IN_ADMIN_PANEL[uid] == cnst.BTN_BROADCAST:
