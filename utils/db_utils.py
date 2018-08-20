@@ -288,12 +288,15 @@ def get_leave_reasons():
     return arr
 
 
-def add_quest_msg(quest, answs):
-    with sqlite3.connect(config.db_name) as connection:
-        cursor = connection.cursor()
-        sql = '''INSERT OR IGNORE INTO quest_msg (quest, answs) VALUES (?, ?)'''
-        cursor.execute(sql, (quest, answs))
-        connection.commit()
+def add_quest_msg(quest, answs, id=None):
+    if id is not None:
+        update_quest(quest, answs, id)
+    else:
+        with sqlite3.connect(config.db_name) as connection:
+            cursor = connection.cursor()
+            sql = '''INSERT OR IGNORE INTO quest_msg (quest, answs) VALUES (?, ?)'''
+            cursor.execute(sql, (quest, answs))
+            connection.commit()
 
 
 def delete_quest_msg(id):
@@ -316,3 +319,11 @@ def get_quest_msgs():
             arr.append(item)
         connection.commit()
     return arr
+
+
+def update_quest(quest, answs, id):
+    with sqlite3.connect(config.db_name) as connection:
+        cursor = connection.cursor()
+        sql = '''UPDATE quest_msg SET quest=?, answs=? WHERE id=?'''
+        cursor.execute(sql, (quest, answs, id))
+        connection.commit()

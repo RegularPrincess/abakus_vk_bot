@@ -114,15 +114,21 @@ def admin_message_processing(uid, uname, text):
             vk.send_message_keyboard(uid, "Удалено", cnst.KEYBOARD_ADMIN)
             IN_ADMIN_PANEL[uid] = ''
         except ValueError:
+            qid_str = text.split(' ')[0]
+
+            if utils.isint(qid_str) and \
+                            IN_ADMIN_PANEL[uid].quest is None and IN_ADMIN_PANEL[uid].id is None:
+                IN_ADMIN_PANEL[uid].id = int(qid_str)
+                text = ' '.join(text.split(' ')[1:])
             if IN_ADMIN_PANEL[uid].quest is None:
                 IN_ADMIN_PANEL[uid].quest = text
                 vk.send_message_keyboard(uid, cnst.MSG_ADDING_ANSWS_VAR, cnst.KEYBOARD_END_AND_CANCELE)
             elif text == cnst.BTN_END:
-                db.add_quest_msg(IN_ADMIN_PANEL[uid].quest, '')
+                db.add_quest_msg(IN_ADMIN_PANEL[uid].quest, '', IN_ADMIN_PANEL[uid].id)
                 vk.send_message_keyboard(uid, "Добавлено", cnst.KEYBOARD_ADMIN)
                 IN_ADMIN_PANEL[uid] = ''
             else:
-                db.add_quest_msg(IN_ADMIN_PANEL[uid].quest, text)
+                db.add_quest_msg(IN_ADMIN_PANEL[uid].quest, text, IN_ADMIN_PANEL[uid].id)
                 vk.send_message_keyboard(uid, "Добавлено", cnst.KEYBOARD_ADMIN)
                 IN_ADMIN_PANEL[uid] = ''
 

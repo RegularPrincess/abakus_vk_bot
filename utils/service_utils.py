@@ -184,3 +184,11 @@ def getquest_msgs_as_str():
         else:
             str += '(ID-{}) {} \n\n'.format(q.id, q.quest)
     return str
+
+
+def isint(s):
+    try:
+        int(s)
+        return True
+    except ValueError:
+        return False
