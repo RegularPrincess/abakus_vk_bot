@@ -64,7 +64,7 @@ def admin_message_processing(uid, uname, text):
 
     elif text == cnst.BTN_QUESTIONS:
         IN_ADMIN_PANEL[uid] = m.QuestMsg()
-        msg = utils.getquest_msgs_as_str()
+        msg = utils.get_quest_msgs_as_str()
         vk.send_message(uid, msg)
         vk.send_message_keyboard(uid, cnst.MSG_ACCEPT_QUEST_MSG, cnst.KEYBOARD_CANCEL)
 
@@ -110,7 +110,7 @@ def admin_message_processing(uid, uname, text):
             if IN_ADMIN_PANEL[uid].quest is not None:
                 int('not int')
             qid = int(text)
-            db.delete_quest_msg(qid)
+            utils.del_question(qid)
             vk.send_message_keyboard(uid, "Удалено", cnst.KEYBOARD_ADMIN)
             IN_ADMIN_PANEL[uid] = ''
         except ValueError:
@@ -124,11 +124,11 @@ def admin_message_processing(uid, uname, text):
                 IN_ADMIN_PANEL[uid].quest = text
                 vk.send_message_keyboard(uid, cnst.MSG_ADDING_ANSWS_VAR, cnst.KEYBOARD_END_AND_CANCELE)
             elif text == cnst.BTN_END:
-                db.add_quest_msg(IN_ADMIN_PANEL[uid].quest, '', IN_ADMIN_PANEL[uid].id)
+                utils.add_quest_msg(IN_ADMIN_PANEL[uid].quest, '', IN_ADMIN_PANEL[uid].id)
                 vk.send_message_keyboard(uid, "Сохранено", cnst.KEYBOARD_ADMIN)
                 IN_ADMIN_PANEL[uid] = ''
             else:
-                db.add_quest_msg(IN_ADMIN_PANEL[uid].quest, text, IN_ADMIN_PANEL[uid].id)
+                utils.add_quest_msg(IN_ADMIN_PANEL[uid].quest, text, IN_ADMIN_PANEL[uid].id)
                 vk.send_message_keyboard(uid, "Сохранено", cnst.KEYBOARD_ADMIN)
                 IN_ADMIN_PANEL[uid] = ''
 

@@ -14,6 +14,27 @@ import consts as cnst
 import config as cfg
 
 
+class id_wrapper:
+    def __init__(self):
+        self.questions = db.get_quest_msgs()
+
+    def get_db_id(self, vid):
+        return self.questions[vid - 1].id
+
+    def get_view_id(self, id):
+        i = 1
+        for q in self.questions:
+            if q.id == id:
+                return i
+            i += 1
+
+    def update(self):
+        self.questions = db.get_quest_msgs()
+
+
+ID_WRAPPER = id_wrapper()
+
+
 def make_subs_file(uid):
     bot_followers = db.get_bot_followers()
     if len(bot_followers) == 0:
@@ -173,17 +194,32 @@ def send_data_to_uon(data, uid):
     print(response)
 
 
-def getquest_msgs_as_str():
+def get_quest_msgs_as_str():
     quests = db.get_quest_msgs()
     str = ''
     if len(quests) == 0:
         str = '<Еще нет ни одного вопроса кроме вопросов о телефоне и email, которые есть всегда>'
     for q in quests:
         if len(q.answs) > 0:
-            str += '(ID-{}) {} \n(Варианты ответа: {})\n\n'.format(q.id, q.quest, q.answs)
+            str += '(ID-{}) {} \n(Варианты ответа: {})\n\n'.format(ID_WRAPPER.get_view_id(q.id), q.quest, q.answs)
         else:
-            str += '(ID-{}) {} \n\n'.format(q.id, q.quest)
+            str += '(ID-{}) {} \n\n'.format(ID_WRAPPER.get_view_id(q.id), q.quest)
     return str
+
+
+def del_question(vid):
+    db_id = ID_WRAPPER.get_db_id(vid)
+    db.delete_quest_msg(db_id)
+    ID_WRAPPER.update()
+
+
+def add_quest_msg(quest, answs, vid=None):
+    db_id = vid
+    if vid is not None:
+        db_id = ID_WRAPPER.get_db_id(vid)
+    db.add_quest_msg(quest, answs, db_id)
+    ID_WRAPPER.update()
+
 
 
 def isint(s):
