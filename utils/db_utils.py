@@ -47,9 +47,13 @@ with sqlite3.connect(config.db_name) as connection:
     sql = '''CREATE TABLE IF NOT EXISTS last_msg (
                 id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
                 msg TEXT NOT NULL UNIQUE)'''
+    sql = '''CREATE TABLE IF NOT EXISTS years_answs (
+               id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+               years TEXT NOT NULL UNIQUE,
+               uniq INTEGER DEFAULT 0 UNIQUE)'''
     cursor.execute(sql)
-
-
+    sql = '''INSERT OR IGNORE INTO years_answs (years)  VALUES ('{!s}')'''.format(cnst.DEF_YEARS)
+    cursor.execute(sql)
     sql = "INSERT OR IGNORE INTO last_msg(msg) VALUES ('{!s}')".format(cnst.MSG_ENROLL_COMPLETED)
     cursor.execute(sql)
     sql = '''CREATE INDEX IF NOT EXISTS uid_known_users ON known_users (uid)'''
@@ -367,6 +371,24 @@ def get_last_msg():
     with sqlite3.connect(config.db_name) as connection:
         cursor = connection.cursor()
         sql = '''SELECT * FROM last_msg'''
+        res = cursor.execute(sql).fetchone()
+        print(res[1])
+        return res[1]
+
+
+def update_years(years):
+    with sqlite3.connect(config.db_name) as connection:
+        cursor = connection.cursor()
+        sql = '''UPDATE years_answs SET years=?'''
+        res = cursor.execute(sql, (years,))
+        print(res)
+        connection.commit()
+
+
+def get_years():
+    with sqlite3.connect(config.db_name) as connection:
+        cursor = connection.cursor()
+        sql = '''SELECT * FROM years_answs'''
         res = cursor.execute(sql).fetchone()
         print(res[1])
         return res[1]

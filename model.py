@@ -30,6 +30,7 @@ class EnrollInfo:
         self.email = None
         self.number = None
         self.adress = None
+        self.year = None
 
     def name_is_sign(self):
         return self.name is not None

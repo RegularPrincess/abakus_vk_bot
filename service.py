@@ -16,7 +16,7 @@ READY_TO_LEAVE = {}
 thread_manager = mt.ThreadManager()
 
 thread_manager.run_brdcst_shedule()
-utils.send_message_admins_after_restart()
+# utils.send_message_admins_after_restart()
 
 
 def admin_message_processing(uid, uname, text):
@@ -71,7 +71,12 @@ def admin_message_processing(uid, uname, text):
     elif text == cnst.BTN_LAST_MSG:
         IN_ADMIN_PANEL[uid] = cnst.BTN_LAST_MSG
         last_msg = db.get_last_msg()
-        vk.send_message_keyboard(uid, cnst.MSG_LAST_MSG.format(last_msg, '{}', '{}'), cnst.KEYBOARD_CANCEL)
+        vk.send_message_keyboard(uid, cnst.MSG_LAST_MSG.format(last_msg, '{}', '{}'), cnst.KEYBOARD_CANCEL_AND_YEAR)
+
+    elif text == cnst.BTN_EDIT_YEAR:
+        IN_ADMIN_PANEL[uid] = cnst.BTN_EDIT_YEAR
+        years = db.get_years()
+        vk.send_message_keyboard(uid, cnst.MSG_EDIT_YEARS.format(years), cnst.KEYBOARD_CANCEL_AND_YEAR)
 
     elif text.lower() == cnst.CMD_PARSE_GROUP:
         if db.is_admin(uid):
@@ -148,6 +153,14 @@ def admin_message_processing(uid, uname, text):
         vk.send_message_keyboard(uid, cnst.MSG_BROADCAST_COMPLETED.format(count), cnst.KEYBOARD_ADMIN)
         IN_ADMIN_PANEL[uid] = ''
 
+    elif IN_ADMIN_PANEL[uid] == cnst.BTN_EDIT_YEAR:
+        if ";" in text:
+            db.update_years(text)
+            vk.send_message_keyboard(uid, cnst.SAVED, cnst.KEYBOARD_ADMIN)
+            IN_ADMIN_PANEL[uid] = ''
+        else:
+            vk.send_message(uid, "Придерживайтесь формата.")
+
     elif IN_ADMIN_PANEL[uid] == cnst.BTN_LAST_MSG:
         db.update_last_msg(text)
         vk.send_message_keyboard(uid, cnst.SAVED, cnst.KEYBOARD_ADMIN)
@@ -216,23 +229,24 @@ def message_processing(uid, text):
 
     # Обработка ввода данных пользователя
     elif uid in READY_TO_ENROLL:
-        if not READY_TO_ENROLL[uid].email_is_sign():
-            if utils.is_email_valid(text):
-                READY_TO_ENROLL[uid].set_email(text)
-                vk.send_message(uid, cnst.MSG_ACCEPT_NUMBER)
-            else:
-                vk.send_message(uid, cnst.MSG_UNCORECT_EMAIL)
-        elif not READY_TO_ENROLL[uid].number_is_sign():
+        if not READY_TO_ENROLL[uid].number_is_sign():
             if utils.is_number_valid(text):
                 READY_TO_ENROLL[uid].set_number(text)
-                adress = db.get_adresses()
-                utils.send_adresses(uid, adress, need_id=False)
-                vk.send_message_keyboard(uid, "test", "")
-                adr_names = db.get_adresses_name()
-                keyboard = utils.get_keyboard_from_list(adr_names, def_btn=cnst.cancel_btn)
-                vk.send_message_keyboard(uid, cnst.SHOOSE_ADDRESS, keyboard)
+                years = db.get_years()
+                years_arr = years.split('; ')
+                keyboard = utils.get_keyboard_from_list(years_arr, def_btn=cnst.cancel_btn)
+                vk.send_message_keyboard(uid, cnst.SHOOSE_YEAR, keyboard)
             else:
                 vk.send_message(uid, cnst.MSG_UNCORECT_NUMBER)
+        elif READY_TO_ENROLL[uid].year is None:
+            READY_TO_ENROLL[uid].year = text
+            adress = db.get_adresses()
+            utils.send_adresses(uid, adress, need_id=False)
+            vk.send_message_keyboard(uid, "test", "")
+            adr_names = db.get_adresses_name()
+            keyboard = utils.get_keyboard_from_list(adr_names, def_btn=cnst.cancel_btn)
+            vk.send_message_keyboard(uid, cnst.SHOOSE_ADDRESS, keyboard)
+
         elif not READY_TO_ENROLL[uid].adress_is_sign():
             adress = db.get_adress_by_name(text)
             if adress.is_sign():
