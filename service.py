@@ -328,22 +328,11 @@ def message_processing(uid, text):
             READY_TO_ENROLL[uid].set_name(uname)
             if utils.is_email_valid(text):
                 READY_TO_ENROLL[uid].set_email(text)
-                adress = db.get_adresses()
-                if len(adress) > 0:
-                    mt.send_adresses(uid, adress, need_id=False)
-                    adr_names = db.get_adresses_name()
-                    keyboard = utils.get_keyboard_from_list(adr_names, def_btn=cnst.cancel_btn)
-                    msg = db.get_addr_request()
-                    mt.send_message(uid, msg, keyboard)
-                else:
-                    READY_TO_ENROLL[uid].set_adress("<Не указано ни одного адреса>")
-                    msg = db.get_number_quest()
-                    mt.send_message(uid, msg, cnst.KEYBOARD_CANCEL)
+                addr_req(uid)
             else:
                 if text == cnst.BTN_SKIP:
                     READY_TO_ENROLL[uid].set_email('')
-                    msg = db.get_number_quest()
-                    mt.send_message(uid, msg, cnst.KEYBOARD_CANCEL)
+                    addr_req(uid)
                 else:
                     mt.send_message(uid, cnst.MSG_UNCORECT_EMAIL)
 
@@ -450,6 +439,20 @@ def message_allow(uid):
 def message_deny(uid):
     db.set_bot_follower_mess_allowed(uid, 0)
     return 'ok'
-#
+
+
+def addr_req(uid):
+    adress = db.get_adresses()
+    if len(adress) > 0:
+        mt.send_adresses(uid, adress, need_id=False)
+        adr_names = db.get_adresses_name()
+        keyboard = utils.get_keyboard_from_list(adr_names, def_btn=cnst.cancel_btn)
+        msg = db.get_addr_request()
+        mt.send_message(uid, msg, keyboard)
+    else:
+        READY_TO_ENROLL[uid].set_adress("<Не указано ни одного адреса>")
+        msg = db.get_number_quest()
+        mt.send_message(uid, msg, cnst.KEYBOARD_CANCEL)
+
 # pg = mt.ThreadParseGroup(cfg.admin_id)
 # pg.start()
