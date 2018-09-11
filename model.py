@@ -29,8 +29,16 @@ class EnrollInfo:
         self.name = None
         self.email = None
         self.number = None
-        self.adress = None
-        self.year = None
+        self.where = None
+        self.who = None
+        self.when = None
+        self.budget = None
+        self.quests = None
+        self.answers = []
+        self.address = None
+
+    def address_is_sign(self):
+        return self.address is not None
 
     def name_is_sign(self):
         return self.name is not None
@@ -41,26 +49,20 @@ class EnrollInfo:
     def number_is_sign(self):
         return self.number is not None
 
-    def adress_is_sign(self):
-        return self.adress is not None
-
     def set_name(self, name):
         self.name = name
 
     def set_email(self, email):
-        if self.name_is_sign():
-            self.email = email
-        else:
-            raise BaseException()
+        self.email = email
 
     def set_number(self, number):
-        self.number = number
-
-    def set_adress(self, adress):
-        if self.number_is_sign():
-            self.adress = adress
+        if self.name_is_sign() and self.email_is_sign():
+            self.number = number
         else:
             raise BaseException()
+
+    def set_address(self, address):
+        self.address = address
 
     def reset(self):
         self.name = None
@@ -79,6 +81,18 @@ class BcstByTime:
 
     def date_time_is_not_sign(self):
         return self.start_date is None or self.time is None or self.repet_days is None
+
+#
+# class QuestMsgs:
+#     def __init__(self):
+#         self.quests = []
+#
+
+class QuestMsg:
+    def __init__(self, id=None, quest=None, answs=None):
+        self.id = id
+        self.quest = quest
+        self.answs = answs
 
 
 class Adress:

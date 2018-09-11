@@ -4,6 +4,7 @@
 from flask import Flask
 from flask import json
 from flask import request
+import logging as log
 
 import config
 import service as s
@@ -30,13 +31,17 @@ def debug():
 
 @app.route(rule='/{0}'.format(bot_name), methods=['POST'])
 def processing():
+    print('Пришел пост запрос')
     data = json.loads(request.data)
 
     if 'secret' not in data.keys():
+        print('Not vk')
         return 'Not VK.'
     elif not data['secret'] == secret_key:
+        print(data['secret'] + "  token не подходит")
         return 'Bad query.'
     if data['type'] == 'confirmation':
+        print("Группа привязана!")
         return confirmation_token
     elif data['type'] == 'group_join':
         uid = data['object']['user_id']
@@ -59,9 +64,11 @@ def processing():
         uid = data['object']['user_id']
         answer = s.message_deny(uid)
         return answer
+    return 'ok'
 
 
 def main(argv):
+    print ("Старт")
     port = int(argv[1])
     app.run(host='0.0.0.0', port=port, debug=False)
 

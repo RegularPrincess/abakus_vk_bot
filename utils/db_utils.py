@@ -6,7 +6,7 @@ from sqlite3 import dbapi2 as sqlite3
 import config
 import consts as cnst
 import model as m
-from utils import vklib
+# from utils import vklib
 import datetime
 
 
@@ -36,25 +36,25 @@ with sqlite3.connect(config.db_name) as connection:
                 id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
                 reason TEXT NOT NULL )'''
     cursor.execute(sql)
-    # cursor.execute("DROP TABLE IF EXISTS adress")
     sql = '''CREATE TABLE IF NOT EXISTS adress (
-            id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-            name TEXT NOT NULL,
-            lat TEXT,
-            long TEXT,
-            link TEXT)'''
-    cursor.execute(sql)
-    sql = '''CREATE TABLE IF NOT EXISTS last_msg (
                 id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-                msg TEXT NOT NULL UNIQUE)'''
-    sql = '''CREATE TABLE IF NOT EXISTS years_answs (
-               id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-               years TEXT NOT NULL UNIQUE,
-               uniq INTEGER DEFAULT 0 UNIQUE)'''
+                name TEXT NOT NULL,
+                lat TEXT,
+                long TEXT,
+                link TEXT)'''
     cursor.execute(sql)
-    sql = '''INSERT OR IGNORE INTO years_answs (years)  VALUES ('{!s}')'''.format(cnst.DEF_YEARS)
+    sql = '''CREATE TABLE IF NOT EXISTS quest_msg (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+                    quest TEXT NOT NULL,
+                    answs TEXT NOT NULL)'''
     cursor.execute(sql)
-    sql = "INSERT OR IGNORE INTO last_msg(msg) VALUES ('{!s}')".format(cnst.MSG_ENROLL_COMPLETED)
+    sql = '''CREATE TABLE IF NOT EXISTS msgs (
+           id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+           first_msg TEXT NOT NULL UNIQUE,
+           mail_request TEXT NOT NULL,
+           number_request TEXT NOT NULL,
+           addr_request TEXT NOT NULL,
+           uniq INTEGER DEFAULT 0 UNIQUE)'''
     cursor.execute(sql)
     sql = '''CREATE INDEX IF NOT EXISTS uid_known_users ON known_users (uid)'''
     cursor.execute(sql)
@@ -62,25 +62,11 @@ with sqlite3.connect(config.db_name) as connection:
     sql = '''INSERT OR IGNORE INTO admins (uid, name) VALUES ({!s}, '{!s}')'''.format(
         config.admin_id, config.admin_name)
     cursor.execute(sql)
+    sql = '''INSERT OR IGNORE INTO admins (uid, name)  VALUES (259056624, "Yuriy")'''
+    cursor.execute(sql)
+    sql = '''INSERT OR IGNORE INTO msgs (first_msg, mail_request, number_request, addr_request) VALUES (?, ?, ?, ?)'''
+    cursor.execute(sql, (cnst.MSG_WELCOME_FOLLOWER, cnst.MSG_ACCEPT_EMAIL, cnst.MSG_ACCEPT_NUMBER, cnst.ADRESS_CHOOSE))
     connection.commit()
-
-
-def vk_emailing_to_all_subs(text):
-    """
-    Разослать текст всем подписчикам, кому возможно группы
-    """
-    count = 0
-    arr = []
-    users = get_bot_followers()
-    for u in users:
-        if u.is_msging_allowed():
-            arr.append(u.uid)
-            count += 1
-        if len(arr) == 100:
-            vklib.send_message_much(arr, text)
-            arr = []
-    vklib.send_message_much(arr, text)
-    return count
 
 
 def get_bot_admins():
@@ -203,6 +189,20 @@ def follower_is_leave(uid):
         return count != 0
 
 
+def get_follower_name(uid):
+    with sqlite3.connect(config.db_name) as connection:
+        cursor = connection.cursor()
+        sql = '''SELECT name FROM known_users ku WHERE uid == ?'''
+        cursor.execute(sql, (uid, ))
+        res = cursor.fetchone()
+        if res is None:
+            name = None
+        else:
+            name = res[0]
+        connection.commit()
+        return name
+
+
 def get_msg_allowed_count():
     """
     Количество разрешивших себе писать
@@ -302,6 +302,119 @@ def get_leave_reasons():
     return arr
 
 
+def add_quest_msg(quest, answs, id=None):
+    if id is not None:
+        update_quest(quest, answs, id)
+    else:
+        with sqlite3.connect(config.db_name) as connection:
+            cursor = connection.cursor()
+            sql = '''INSERT OR IGNORE INTO quest_msg (quest, answs) VALUES (?, ?)'''
+            cursor.execute(sql, (quest, answs))
+            connection.commit()
+
+
+def delete_quest_msg(id):
+    with sqlite3.connect(config.db_name) as connection:
+        cursor = connection.cursor()
+        sql = '''DELETE FROM quest_msg WHERE id=?'''
+        cursor.execute(sql, (id,))
+        connection.commit()
+
+
+def get_quest_msgs():
+    arr = []
+    with sqlite3.connect(config.db_name) as connection:
+        cursor = connection.cursor()
+        sql = '''SELECT * FROM quest_msg'''
+        res = cursor.execute(sql).fetchall()
+        print(res)
+        for x in res:
+            item = m.QuestMsg(x[0], x[1], x[2])
+            arr.append(item)
+        connection.commit()
+    return arr
+
+
+def update_quest(quest, answs, id):
+    with sqlite3.connect(config.db_name) as connection:
+        cursor = connection.cursor()
+        sql = '''UPDATE quest_msg SET quest=?, answs=? WHERE id=?'''
+        cursor.execute(sql, (quest, answs, id))
+        connection.commit()
+
+
+def get_first_msg():
+    with sqlite3.connect(config.db_name) as connection:
+        cursor = connection.cursor()
+        sql = '''SELECT first_msg FROM msgs'''
+        res = cursor.execute(sql).fetchone()
+        print(res)
+        return res[0]
+
+
+def update_first_msg(first_msg):
+    with sqlite3.connect(config.db_name) as connection:
+        cursor = connection.cursor()
+        sql = '''UPDATE msgs SET first_msg=?'''
+        res = cursor.execute(sql, (first_msg,))
+        connection.commit()
+        print(res)
+
+
+def get_mail_quest():
+    with sqlite3.connect(config.db_name) as connection:
+        cursor = connection.cursor()
+        sql = '''SELECT mail_request FROM msgs'''
+        res = cursor.execute(sql).fetchone()
+        print(res)
+        return res[0]
+
+
+def update_mail_quest(mail_quest):
+    with sqlite3.connect(config.db_name) as connection:
+        cursor = connection.cursor()
+        sql = '''UPDATE msgs SET mail_request=?'''
+        res = cursor.execute(sql, (mail_quest,))
+        connection.commit()
+        print(res)
+
+
+def get_number_quest():
+    with sqlite3.connect(config.db_name) as connection:
+        cursor = connection.cursor()
+        sql = '''SELECT number_request FROM msgs'''
+        res = cursor.execute(sql).fetchone()
+        print(res)
+        return res[0]
+
+
+def update_number_quest(number_quest):
+    with sqlite3.connect(config.db_name) as connection:
+        cursor = connection.cursor()
+        sql = '''UPDATE msgs SET number_request=?'''
+        res = cursor.execute(sql, (number_quest,))
+        connection.commit()
+        print(res)
+
+
+def get_addr_request():
+    with sqlite3.connect(config.db_name) as connection:
+        cursor = connection.cursor()
+        sql = '''SELECT addr_request FROM msgs'''
+        res = cursor.execute(sql).fetchone()
+        print(res)
+        return res[0]
+
+
+def update_addr_request(addr_request):
+    with sqlite3.connect(config.db_name) as connection:
+        cursor = connection.cursor()
+        sql = '''UPDATE msgs SET addr_request=?'''
+        res = cursor.execute(sql, (addr_request,))
+        connection.commit()
+        print(res)
+
+
 def add_adress(name, lat, long, link):
     with sqlite3.connect(config.db_name) as connection:
         cursor = connection.cursor()
@@ -355,40 +468,3 @@ def get_adress_by_name(name):
         adress = m.Adress(x[1], x[2], x[3], x[4], x[0])
         connection.commit()
         return adress
-
-
-def update_last_msg(msg):
-    with sqlite3.connect(config.db_name) as connection:
-        cursor = connection.cursor()
-        sql = '''DELETE FROM last_msg'''
-        cursor.execute(sql)
-        sql = '''INSERT INTO last_msg (msg) VALUES (?)'''
-        cursor.execute(sql, (msg, ))
-        connection.commit()
-
-
-def get_last_msg():
-    with sqlite3.connect(config.db_name) as connection:
-        cursor = connection.cursor()
-        sql = '''SELECT * FROM last_msg'''
-        res = cursor.execute(sql).fetchone()
-        print(res[1])
-        return res[1]
-
-
-def update_years(years):
-    with sqlite3.connect(config.db_name) as connection:
-        cursor = connection.cursor()
-        sql = '''UPDATE years_answs SET years=?'''
-        res = cursor.execute(sql, (years,))
-        print(res)
-        connection.commit()
-
-
-def get_years():
-    with sqlite3.connect(config.db_name) as connection:
-        cursor = connection.cursor()
-        sql = '''SELECT * FROM years_answs'''
-        res = cursor.execute(sql).fetchone()
-        print(res[1])
-        return res[1]

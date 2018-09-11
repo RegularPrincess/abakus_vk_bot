@@ -4,6 +4,8 @@
 import json
 import requests
 import config
+import logging as log
+
 
 api_ver = config.api_ver
 
@@ -31,30 +33,11 @@ def send_message(user_id, text):
     data = {
         'message': text,
         'user_id': user_id,
-        # 'lat': 32.45,
-        # 'long': 56.44,
         'access_token': config.token,
         'v': api_ver
     }
-    requests.post(config.vk_api_url + 'messages.send', data=data)
-
-
-def send_message_geo(user_id, text, lat, long):
-    """
-    Send VK message with map
-    """
-    data = {
-        'message': text,
-        'user_id': user_id,
-        'lat': lat,
-        'long': long,
-        'access_token': config.token,
-        'v': api_ver
-    }
-    requests.post(config.vk_api_url + 'messages.send', data=data)
-
-
-# send_message(259056624, 'geo?')
+    r = requests.post(config.vk_api_url + 'messages.send', data=data)
+    print(r)
 
 
 def send_message_keyboard(user_id, text, keyboard):
@@ -69,7 +52,7 @@ def send_message_keyboard(user_id, text, keyboard):
         'v': api_ver
     }
     res = requests.post(config.vk_api_url + 'messages.send', data=data)
-    pass
+    print(res)
 
 
 def get_group_memebers(group_id, offset=0, count=1000):
@@ -245,11 +228,39 @@ def send_message_doc(user_id, text, doc):
     requests.post(config.vk_api_url + 'messages.send', data=data)
 
 
-def get_message_by_id(id):
+def parse_24_subs(ids):
+    code = 'var ids = ' + str(ids) + '''
+    ;var i = 0;        
+        var data = [];
+        var users = API.users.get({"user_ids":ids});
+        while(i < ids.length){
+            data.push(ids[i]);
+            data.push(users[i].first_name + " " + users[i].last_name);
+            var allow = API.messages.isMessagesFromGroupAllowed({"group_id": ''' + str(config.group_id) + ''', "user_id":ids[i]});
+            data.push(allow.is_allowed);
+            i = i + 1;
+        }
+        return data;'''
     data = {
-        "message_ids": id,
-        "preview_length": 0,
-        "extended": 0
+        'code': code,
+        'access_token': config.token,
+        'v': api_ver
     }
-    res = requests.post(config.vk_api_url + 'messages.getById', data=data)
+    res = requests.post(config.vk_api_url + 'execute', data=data)
+    return res
+
+
+def send_message_geo(user_id, text, lat, long):
+    """
+    Send VK message with map
+    """
+    data = {
+        'message': text,
+        'user_id': user_id,
+        'lat': lat,
+        'long': long,
+        'access_token': config.token,
+        'v': api_ver
+    }
+    requests.post(config.vk_api_url + 'messages.send', data=data)
 
