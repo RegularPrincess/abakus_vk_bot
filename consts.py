@@ -5,7 +5,7 @@ import model as m
 
 SEPARATOR = '|'
 
-BTN_ENROLL = "Подобрать тур!"
+BTN_ENROLL = "Записаться на бесплатное занятие!"
 BTN_CANCEL = "⛔ Отмена"
 BTN_BROADCAST = "Рассылка"
 BTN_ADD_ADMIN = "Добавить администратора"
