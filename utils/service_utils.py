@@ -81,6 +81,7 @@ def del_uid_from_dict(uid, dict_):
 
 def send_message_admins(info):
     admins = db.get_list_bot_admins()
+    info.answers.append(info.address)
     note = 'Примечания : {}'.format("\n".join(info.answers))
     vk.send_message_much(admins, cnst.NOTIFY_ADMIN.format(info.uid, info.name, info.email, info.number, note))
 
