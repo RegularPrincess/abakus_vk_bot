@@ -352,7 +352,7 @@ def message_processing(uid, text):
                 mt.send_message(uid, cnst.MSG_ENROLL_COMPLETED.format(READY_TO_ENROLL[uid].name),
                                          cnst.KEYBOARD_USER)
                 # Отправка ссылок на выбранный офис
-                adress = db.get_adress_by_name(text)
+                adress = db.get_adress_by_name(READY_TO_ENROLL[uid].address)
                 links = adress.get_links()
                 msg_links = 'Ссылки на выбранный офис: \n'
                 for l in links:
