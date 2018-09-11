@@ -418,6 +418,7 @@ def update_addr_request(addr_request):
 def add_adress(name, lat, long, link):
     with sqlite3.connect(config.db_name) as connection:
         cursor = connection.cursor()
+        print("DB saving" + name)
         sql = '''INSERT INTO adress (name, lat, long, link) VALUES (?, ?, ?, ?)'''
         cursor.execute(sql, (name, lat, long, link))
         connection.commit()
