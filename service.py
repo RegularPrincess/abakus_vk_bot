@@ -311,8 +311,7 @@ def message_processing(uid, text):
         if len(READY_TO_ENROLL[uid].quests) > 0:
             if len(READY_TO_ENROLL[uid].quests) == 1:
                 READY_TO_ENROLL[uid].answers.append(text)
-                msg = db.get_mail_quest()
-                mt.send_message(uid, msg, cnst.KEYBOARD_END_AND_SKIP)
+                addr_req(uid)
                 READY_TO_ENROLL[uid].quests.pop(0)
             else:
                 k = None
@@ -324,17 +323,6 @@ def message_processing(uid, text):
                 else:
                     k = cnst.KEYBOARD_CANCEL
                 mt.send_message(uid, q.quest, k)
-        elif not READY_TO_ENROLL[uid].email_is_sign():
-            READY_TO_ENROLL[uid].set_name(uname)
-            if utils.is_email_valid(text):
-                READY_TO_ENROLL[uid].set_email(text)
-                addr_req(uid)
-            else:
-                if text == cnst.BTN_SKIP:
-                    READY_TO_ENROLL[uid].set_email('')
-                    addr_req(uid)
-                else:
-                    mt.send_message(uid, cnst.MSG_UNCORECT_EMAIL)
 
         elif not READY_TO_ENROLL[uid].address_is_sign():
             adress = db.get_adress_by_name(text)

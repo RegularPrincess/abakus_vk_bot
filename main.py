@@ -70,7 +70,8 @@ def processing():
 def main():
     print("Start on port: " + str(config.port))
     port = config.port
-    app.run(debug=False)
+    app.run(host='0.0.0.0', port=port, debug=False)
+
 #host='0.0.0.0', port=port,
 if __name__ == '__main__':
     main()
