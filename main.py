@@ -68,7 +68,7 @@ def processing():
 
 
 def main():
-    print("Start on port: " + config.port)
+    print("Start on port: " + str(config.port))
     port = config.port
     app.run(debug=False)
 #host='0.0.0.0', port=port,
