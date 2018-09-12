@@ -56,10 +56,7 @@ class EnrollInfo:
         self.email = email
 
     def set_number(self, number):
-        if self.name_is_sign() and self.email_is_sign():
-            self.number = number
-        else:
-            raise BaseException()
+        self.number = number
 
     def set_address(self, address):
         self.address = address
