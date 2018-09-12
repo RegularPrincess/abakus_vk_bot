@@ -288,8 +288,7 @@ def message_processing(uid, text):
                 k = cnst.KEYBOARD_CANCEL
             mt.send_message(uid, q.quest, k)
         else:
-            msg = db.get_mail_quest()
-            mt.send_message(uid, msg, cnst.KEYBOARD_END_AND_SKIP)
+            addr_req(uid)
             READY_TO_ENROLL[uid].quests.pop(0)
 
     elif text == cnst.BTN_CANCEL:
